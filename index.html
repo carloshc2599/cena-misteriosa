@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔒 Cena Misteriosa: Escape Room Romántico</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Leaflet Map CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+'neon-pink': '#ff69b4',
+'neon-deep': '#ff1493',
+'neon-purple': '#8b5cf6',
+'neon-light': '#a855f7',
+'dark-bg': '#0f0a1a',
+'dark-card': '#1a0a2e',
+'dark-surface': '#2d1b4e',
+},
+fontFamily: {
+'display': ['"Segoe UI"', 'system-ui', 'sans-serif'],
+}
+}
+}
+}
+</script>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+background: #0f0a1a;
+color: #e2e8f0;
+font-family: 'Segoe UI', system-ui, sans-serif;
+overflow-x: hidden;
+min-height: 100vh;
+min-height: 100dvh;
+}
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-1 { flex: 1 1 0%; }
+.min-h-screen { min-height: 100vh; }
+.w-full { width: 100%; }
+.max-w-md { max-width: 28rem; }
+.max-w-lg { max-width: 32rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.grid { display: grid; }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-5xl { font-size: 3rem; }
+.text-6xl { font-size: 3.75rem; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-semibold { font-weight: 600; }
+.text-neon-pink { color: #ff69b4; }
+.text-neon-deep { color: #ff1493; }
+.text-neon-purple { color: #8b5cf6; }
+.text-neon-light { color: #a855f7; }
+.bg-dark-bg { background-color: #0f0a1a; }
+.bg-dark-card { background-color: #1a0a2e; }
+.bg-dark-surface { background-color: #2d1b4e; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-full { border-radius: 9999px; }
+.rounded-lg { border-radius: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-10 { margin-top: 2.5rem; }
+.border { border-width: 1px; border-style: solid; }
+.border-purple-900\/50 { border-color: rgba(88, 28, 135, 0.5); }
+.text-gray-200 { color: #e2e8f0; }
+.text-gray-300 { color: #cbd5e1; }
+.text-gray-400 { color: #94a3b8; }
+.text-gray-500 { color: #64748b; }
+.relative { position: relative; }
+.z-10 { z-index: 10; }
+.block { display: block; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0f0a1a; }
+::-webkit-scrollbar-thumb { background: #ff69b4; border-radius: 2px; }
+@keyframes neonPulse {
+0%, 100% { box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff1493, 0 0 40px #ff1493; }
+50% { box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 40px #ff1493, 0 0 80px #ff1493; }
+}
+@keyframes neonPulseText {
+0%, 100% { text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff1493; }
+50% { text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 40px #ff1493, 0 0 60px #ff1493; }
+}
+.neon-glow { animation: neonPulse 2s ease-in-out infinite; }
+.neon-text { animation: neonPulseText 2s ease-in-out infinite; }
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+.shake { animation: shake 0.6s ease-in-out; }
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.5s ease-out forwards; }
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+}
+.float-anim { animation: float 3s ease-in-out infinite; }
+@keyframes twinkle {
+0%, 100% { opacity: 0.2; }
+50% { opacity: 1; }
+}
+@keyframes lockPulse {
+0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px #ff69b4); }
+50% { transform: scale(1.08); filter: drop-shadow(0 0 25px #ff1493) drop-shadow(0 0 40px #8b5cf6); }
+}
+.lock-pulse { animation: lockPulse 2.5s ease-in-out infinite; }
+@keyframes tickPulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.7; transform: scale(1.05); }
+}
+.tick-pulse { animation: tickPulse 1s ease-in-out infinite; }
+.screen { display: none; opacity: 0; transition: opacity 0.5s ease; }
+.screen.active { display: flex; opacity: 1; }
+.btn-neon {
+background: linear-gradient(135deg, #ff1493, #8b5cf6);
+border: 2px solid #ff69b4;
+color: white;
+padding: 14px 32px;
+border-radius: 12px;
+font-size: 1.1rem;
+font-weight: 700;
+letter-spacing: 1px;
+cursor: pointer;
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
+}
+.btn-neon:hover, .btn-neon:active {
+transform: scale(1.05);
+box-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493;
+}
+.btn-neon:active { transform: scale(0.98); }
+.btn-neon:disabled {
+opacity: 0.4;
+cursor: not-allowed;
+transform: none !important;
+box-shadow: none !important;
+}
+.btn-neon::after {
+content: '';
+position: absolute;
+top: -50%;
+left: -60%;
+width: 40%;
+height: 200%;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+transform: skewX(-20deg);
+animation: shimmer 3s infinite;
+}
+@keyframes shimmer {
+0% { left: -60%; }
+100% { left: 160%; }
+}
+.door-card {
+background: linear-gradient(180deg, #2d1b4e 0%, #1a0a2e 100%);
+border: 2px solid #8b5cf6;
+border-radius: 16px;
+padding: 20px;
+cursor: pointer;
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
+}
+.door-card:hover, .door-card:active {
+border-color: #ff69b4;
+transform: translateY(-4px);
+box-shadow: 0 8px 30px rgba(255, 20, 147, 0.3);
+}
+.door-card .door-icon {
+font-size: 3rem;
+display: block;
+margin-bottom: 8px;
+}
+.flip-card { perspective: 1000px; width: 100%; height: 280px; }
+.flip-card-inner {
+position: relative; width: 100%; height: 100%;
+transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back {
+position: absolute; width: 100%; height: 100%;
+backface-visibility: hidden;
+border-radius: 16px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 24px;
+}
+.flip-card-front {
+background: linear-gradient(135deg, #1a0a2e, #2d1b4e);
+border: 2px solid #8b5cf6;
+}
+.flip-card-back {
+background: linear-gradient(135deg, #2d1b4e, #1a0a2e);
+border: 2px solid #ff69b4;
+transform: rotateY(180deg);
+}
+@keyframes borderRotate {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+.vip-card {
+position: relative;
+border-radius: 20px;
+padding: 3px;
+background: linear-gradient(135deg, #ff69b4, #8b5cf6, #ff1493, #a855f7, #ff69b4);
+background-size: 300% 300%;
+animation: borderRotate 4s ease infinite;
+}
+.vip-card-inner {
+background: #1a0a2e;
+border-radius: 17px;
+padding: 28px 20px;
+}
+.pigpen-grid { display: inline-block; margin: 2px; vertical-align: middle; }
+.pigpen-word { display: inline-flex; flex-wrap: wrap; align-items: center; margin-right: 10px; margin-bottom: 6px; }
+.pigpen-container { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; justify-content: center; }
+.modal-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0,0,0,0.85); z-index: 100;
+display: none; align-items: center; justify-content: center;
+padding: 20px; opacity: 0; transition: opacity 0.3s;
+}
+.modal-overlay.visible { opacity: 1; }
+.modal-content {
+background: linear-gradient(135deg, #1a0a2e, #2d1b4e);
+border: 2px solid #ff69b4;
+border-radius: 20px;
+padding: 28px 20px;
+max-width: 360px;
+width: 100%;
+text-align: center;
+transform: scale(0.8);
+transition: transform 0.3s;
+}
+.modal-overlay.visible .modal-content { transform: scale(1); }
+#confettiCanvas {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+pointer-events: none; z-index: 200;
+}
+#particleCanvas {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+pointer-events: none; z-index: 0;
+}
+.progress-bar-track {
+background: rgba(139, 92, 246, 0.2);
+border-radius: 999px;
+height: 8px;
+overflow: hidden;
+}
+.progress-bar-fill {
+background: linear-gradient(90deg, #ff1493, #8b5cf6);
+height: 100%;
+border-radius: 999px;
+transition: width 0.5s ease;
+}
+.cipher-ref-cell {
+width: 36px; height: 36px;
+display: flex; align-items: center; justify-content: center;
+border: 1px solid rgba(139,92,246,0.3);
+border-radius: 6px;
+background: rgba(26,10,46,0.5);
+flex-direction: column;
+position: relative;
+}
+.styled-textarea {
+background: rgba(26,10,46,0.8);
+border: 2px solid #8b5cf6;
+border-radius: 12px;
+color: #e2e8f0;
+padding: 12px;
+font-size: 0.95rem;
+width: 100%;
+resize: vertical;
+min-height: 100px;
+transition: border-color 0.3s;
+}
+.styled-textarea:focus {
+outline: none;
+border-color: #ff69b4;
+box-shadow: 0 0 10px rgba(255,20,147,0.3);
+}
+.styled-input {
+background: rgba(26,10,46,0.8);
+border: 2px solid #8b5cf6;
+border-radius: 12px;
+color: #e2e8f0;
+padding: 12px 16px;
+font-size: 1rem;
+width: 100%;
+transition: border-color 0.3s;
+}
+.styled-input:focus {
+outline: none;
+border-color: #ff69b4;
+box-shadow: 0 0 10px rgba(255,20,147,0.3);
+}
+.quiz-option {
+background: rgba(26,10,46,0.6);
+border: 2px solid #8b5cf6;
+border-radius: 12px;
+padding: 14px 16px;
+text-align: left;
+cursor: pointer;
+transition: all 0.3s ease;
+color: #e2e8f0;
+font-size: 0.95rem;
+width: 100%;
+}
+.quiz-option:hover, .quiz-option:active {
+border-color: #ff69b4;
+background: rgba(255,20,147,0.1);
+}
+.quiz-option.correct {
+border-color: #10b981;
+background: rgba(16,185,129,0.2);
+animation: fadeIn 0.3s;
+}
+.quiz-option.wrong {
+border-color: #ef4444;
+background: rgba(239,68,68,0.2);
+}
+.settings-gear {
+position: fixed;
+top: 12px;
+right: 12px;
+z-index: 50;
+color: rgba(139,92,246,0.4);
+font-size: 1.2rem;
+cursor: pointer;
+transition: color 0.3s;
+}
+.settings-gear:hover { color: #ff69b4; }
+@keyframes doorOpen {
+0% { transform: perspective(600px) rotateY(0deg); }
+100% { transform: perspective(600px) rotateY(-80deg); transform-origin: left; opacity: 0.3; }
+}
+.door-opening { animation: doorOpen 0.8s ease-in-out forwards; }
+@keyframes doorZoomThrough {
+0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+45% { transform: scale(1.08) translateY(-10px); filter: brightness(1.6) drop-shadow(0 0 25px #10b981); opacity: 1; }
+100% { transform: scale(1.4); filter: brightness(3); opacity: 0; }
+}
+.door-transition-out { animation: doorZoomThrough 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none; }
+@keyframes trapdoorFall {
+0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; filter: hue-rotate(0deg); }
+20% { transform: translateY(10px) scale(0.98) rotate(-2deg); filter: hue-rotate(90deg) brightness(1.5); }
+40% { transform: translateY(-5px) scale(0.95) rotate(3deg); }
+70% { transform: translateY(80px) scale(0.7) rotate(-8deg); opacity: 0.5; }
+100% { transform: translateY(160px) scale(0.4) rotate(12deg); opacity: 0; }
+}
+.trapdoor-fall { animation: trapdoorFall 0.75s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; pointer-events: none; }
+@keyframes corridorFlash {
+0% { opacity: 0.85; }
+100% { opacity: 0; }
+}
+.room-flash-overlay {
+position: fixed; inset: 0; background: radial-gradient(circle, rgba(16,185,129,0.5) 0%, rgba(139,92,246,0.2) 60%, transparent 100%);
+z-index: 90; pointer-events: none; animation: corridorFlash 0.6s ease-out forwards;
+}
+.room-trap-overlay {
+position: fixed; inset: 0; background: radial-gradient(circle, rgba(239,68,68,0.6) 0%, rgba(15,10,26,0.9) 70%);
+z-index: 90; pointer-events: none; animation: corridorFlash 0.7s ease-out forwards;
+}
+@keyframes enterRoom {
+0% { opacity: 0; transform: scale(0.92) translateY(18px); }
+100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.enter-room-anim { animation: enterRoom 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes dramaticReset {
+0% { transform: scale(1); opacity: 1; }
+50% { transform: scale(0.8) rotate(5deg); opacity: 0.5; }
+100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.dramatic-reset { animation: dramaticReset 0.8s ease-in-out; }
+#geoMapContainer {
+width: 100%;
+height: 350px;
+border-radius: 16px;
+overflow: hidden;
+border: 2px solid #8b5cf6;
+box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+position: relative;
+background: #1a1528;
+}
+.carto-dark-layer {
+filter: brightness(0.68) invert(1) contrast(2.5) hue-rotate(205deg) saturate(0.35) brightness(0.85);
+}
+#radarSvgOverlay {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 800;
+}
+.map-crosshair {
+position: absolute;
+top: 50%;
+left: 50%;
+width: 24px;
+height: 24px;
+transform: translate(-50%, -50%);
+pointer-events: none;
+z-index: 1000;
+}
+.map-crosshair::before, .map-crosshair::after {
+content: '';
+position: absolute;
+background: #ff69b4;
+box-shadow: 0 0 6px #ff1493;
+}
+.map-crosshair::before { top: 0; left: 11px; width: 2px; height: 24px; }
+.map-crosshair::after { top: 11px; left: 0; width: 24px; height: 2px; }
+.radius-slider {
+-webkit-appearance: none;
+width: 100%;
+height: 8px;
+border-radius: 999px;
+background: rgba(139, 92, 246, 0.3);
+outline: none;
+transition: background 0.3s;
+}
+.radius-slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 22px;
+height: 22px;
+border-radius: 50%;
+background: #ff69b4;
+cursor: pointer;
+box-shadow: 0 0 10px #ff1493;
+border: 2px solid #fff;
+}
+.radius-slider::-moz-range-thumb {
+width: 22px;
+height: 22px;
+border-radius: 50%;
+background: #ff69b4;
+cursor: pointer;
+box-shadow: 0 0 10px #ff1493;
+border: 2px solid #fff;
+}
+.hidden { display: none !important; }
+.hint-badge {
+background: rgba(255,105,180,0.2);
+border: 1px solid #ff69b4;
+border-radius: 8px;
+padding: 10px 14px;
+font-size: 0.9rem;
+color: #ff69b4;
+margin-top: 8px;
+}
+.lock-timer-box {
+background: linear-gradient(135deg, rgba(26,10,46,0.95), rgba(45,27,78,0.95));
+border: 2px solid #ff69b4;
+border-radius: 20px;
+padding: 24px 16px;
+box-shadow: 0 0 30px rgba(255, 20, 147, 0.25), inset 0 0 20px rgba(139, 92, 246, 0.1);
+position: relative;
+overflow: hidden;
+}
+.lock-timer-box::before {
+content: '';
+position: absolute;
+inset: 0;
+background: radial-gradient(circle at 50% 0%, rgba(255,105,180,0.15) 0%, transparent 60%);
+pointer-events: none;
+}
+.timer-digit-group {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 6px;
+}
+.timer-digit {
+background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 100%);
+border: 2px solid #ff69b4;
+border-radius: 12px;
+padding: 10px 14px;
+min-width: 64px;
+font-size: 2rem;
+font-weight: 800;
+color: #ff69b4;
+text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493;
+font-variant-numeric: tabular-nums;
+box-shadow: inset 0 0 15px rgba(255, 20, 147, 0.2), 0 0 15px rgba(255, 105, 180, 0.3);
+}
+.timer-label {
+font-size: 0.65rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+color: #a855f7;
+font-weight: 700;
+}
+.timer-separator {
+font-size: 2rem;
+font-weight: 800;
+color: #ff69b4;
+text-shadow: 0 0 10px #ff1493;
+padding: 0 4px;
+align-self: flex-start;
+margin-top: 10px;
+}
+@keyframes unlockBurst {
+0% { transform: scale(0.5); opacity: 0; }
+50% { transform: scale(1.3); opacity: 1; }
+100% { transform: scale(1); opacity: 1; }
+}
+.unlock-burst { animation: unlockBurst 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+<canvas id="particleCanvas"></canvas>
+<canvas id="confettiCanvas"></canvas>
+<div class="settings-gear" id="settingsGear" title="Configuración">
+<i class="fas fa-gear"></i>
+</div>
+<div class="modal-overlay" id="modalOverlay" style="display: none;">
+<div class="modal-content" id="modalContent">
+<div id="modalBody"></div>
+<button class="btn-neon mt-4 w-full" id="modalBtn" onclick="closeModal()">Aceptar</button>
+</div>
+</div>
+<div class="modal-overlay" id="settingsModal" style="display: none;">
+<div class="modal-content">
+<h3 class="text-xl font-bold text-neon-pink mb-4"><i class="fas fa-gear"></i> Configuración</h3>
+<div class="flex items-center justify-between mb-4 p-3 rounded-lg bg-dark-bg">
+<span><i class="fas fa-volume-high"></i> Sonido</span>
+<button id="soundToggle" class="text-2xl" onclick="toggleSound()">🔊</button>
+</div>
+<button class="w-full py-2.5 px-4 rounded-lg bg-pink-900/40 border border-pink-500 text-pink-200 font-bold mb-3 transition-all hover:bg-pink-900/70 text-xs" onclick="resetOnlyPuzzle5()">
+<i class="fas fa-rotate-left mr-1"></i> Ir a / Reiniciar Prueba 5 (El Revelador)
+</button>
+<button class="w-full py-2.5 px-4 rounded-lg bg-purple-900/40 border border-purple-500 text-purple-200 font-bold mb-3 transition-all hover:bg-purple-900/70 text-xs" onclick="resetOnlyPuzzle4()">
+<i class="fas fa-rotate-left mr-1"></i> Reiniciar solo Prueba 4 (GeoGuessr)
+</button>
+<button class="w-full py-3 px-4 rounded-lg bg-red-900/50 border border-red-500 text-red-300 font-bold mb-3 transition-all hover:bg-red-900" onclick="confirmReset()">
+<i class="fas fa-trash"></i> Reiniciar Todo el Progreso
+</button>
+<button class="btn-neon w-full" onclick="closeSettings()">Cerrar</button>
+</div>
+</div>
+<div id="screen1" class="screen active flex-col items-center justify-center min-h-screen px-6 py-10 text-center relative z-10">
+<div class="fade-in-up max-w-md mx-auto">
+<div class="text-6xl mb-4 float-anim">🔒</div>
+<h1 class="text-4xl font-extrabold neon-text mb-2 tracking-wide" style="color: #ff69b4;">
+CENA MISTERIOSA
+</h1>
+<p class="text-lg text-neon-light font-semibold mb-6 tracking-widest uppercase">
+Escape Room Romántico
+</p>
+<div class="w-24 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mb-6 rounded-full"></div>
+<p class="text-base leading-relaxed text-gray-300 mb-8 px-2">
+Agente especial, tienes una <span class="text-neon-pink font-semibold">misión secreta</span>.
+Para desbloquear la invitación a una cita inolvidable, deberás superar una serie de pruebas.
+<br><br>
+<span class="text-neon-light font-semibold">¿Estás preparada?</span>
+</p>
+<button class="btn-neon neon-glow text-lg px-10 py-4" onclick="startMission()">
+<i class="fas fa-rocket mr-2"></i> ACEPTAR MISIÓN
+</button>
+<div class="mt-10 text-gray-500 text-sm">
+<i class="fas fa-lock text-xs"></i> 5 pruebas por desbloquear
+</div>
+</div>
+</div>
+<div id="screen2" class="screen flex-col items-center min-h-screen px-4 py-6 relative z-10">
+<div class="w-full max-w-lg mx-auto">
+<div class="mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs text-gray-400" id="puzzleProgressLabel">Prueba 1 de 5</span>
+<span class="text-xs text-neon-pink" id="puzzleProgressPct">0%</span>
+</div>
+<div class="progress-bar-track">
+<div class="progress-bar-fill" id="puzzleProgressBar" style="width: 0%"></div>
+</div>
+</div>
+<div id="puzzleContainer" class="fade-in-up"></div>
+</div>
+</div>
+<div id="screen3" class="screen flex-col items-center justify-center min-h-screen px-6 py-10 text-center relative z-10">
+<div class="fade-in-up max-w-md mx-auto w-full">
+<div class="vip-card mb-6">
+<div class="vip-card-inner text-center">
+<div class="text-5xl mb-3">🎫</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-1">PASE VIP</h2>
+<p class="text-xs text-neon-light tracking-widest uppercase mb-4">Acceso exclusivo</p>
+<div class="w-16 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mb-4 rounded-full"></div>
+<div class="text-left space-y-2 mb-4">
+<div class="flex items-center gap-2 text-sm">
+<i class="fas fa-check-circle text-green-400"></i>
+<span>Prueba 1: Cifrado Criptográfico ✓</span>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<i class="fas fa-check-circle text-green-400"></i>
+<span>Prueba 2: Trivial de Pareja ✓</span>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<i class="fas fa-check-circle text-green-400"></i>
+<span>Prueba 3: Laberinto de Puertas ✓</span>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<i class="fas fa-check-circle text-green-400"></i>
+<span>Prueba 4: GeoGuessr Restaurante ✓</span>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<i class="fas fa-check-circle text-green-400"></i>
+<span>Prueba 5: El Revelador del Tiempo ✓</span>
+</div>
+</div>
+<div class="w-16 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mb-4 rounded-full"></div>
+<p class="text-gray-300 text-sm mb-4">
+Has desbloqueado todas las pruebas de la misión.<br>
+¡Nos vemos en nuestra cita romántica!
+</p>
+<div class="bg-dark-bg rounded-xl p-4 space-y-2 text-left">
+<div class="flex justify-between items-center text-sm">
+<span class="text-gray-400">¿Cuándo?</span>
+<span class="text-neon-pink font-bold"> 7 de Noviembre &bull; 15:00h</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-gray-400">¿Dónde?</span>
+<span class="text-neon-light font-bold">🍽️ Restaurante La Bodega</span>
+</div>
+<div class="text-[11px] text-gray-400 mt-1">
+📍 Carrer del Penedès, 18, Sant Quirze del Vallès
+</div>
+</div>
+</div>
+</div>
+<button class="btn-neon neon-glow w-full text-lg mb-3" onclick="goToScreen(5)">
+VER MENSAJE FINAL <i class="fas fa-arrow-right ml-2"></i>
+</button>
+</div>
+</div>
+<div id="screen4" class="screen flex-col items-center min-h-screen px-4 py-6 relative z-10">
+<div class="w-full max-w-lg mx-auto text-center">
+<div class="fade-in-up">
+<div class="text-4xl mb-2">🎲</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-1">Prueba 5: Verdad o Reto</h2>
+<p class="text-sm text-gray-400 mb-4">¡Esta prueba es en vivo! Jugad juntos durante la cena.</p>
+<div class="w-16 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mb-6 rounded-full"></div>
+<p class="text-xs text-gray-500 mb-3" id="cardCounter">Carta 1 de 10</p>
+<div class="flip-card mx-auto mb-6" id="flipCard">
+<div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="text-5xl mb-3">🃏</div>
+<p class="text-lg font-bold text-neon-pink">Toca para revelar</p>
+<p class="text-sm text-gray-400 mt-2">¿Verdad o Reto?</p>
+</div>
+<div class="flip-card-back">
+<div id="cardType" class="text-sm font-bold tracking-widest uppercase mb-2 text-neon-light">VERDAD</div>
+<div class="w-10 h-0.5 bg-neon-pink mx-auto mb-3 rounded-full"></div>
+<p id="cardContent" class="text-base text-gray-200 leading-relaxed"></p>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="btn-neon flex-1" id="nextCardBtn" onclick="nextCard()">
+<i class="fas fa-forward mr-1"></i> Siguiente carta
+</button>
+<button class="btn-neon flex-1" onclick="goToScreen(5)" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #10b981;">
+<i class="fas fa-flag-checkered mr-1"></i> Terminar
+</button>
+</div>
+</div>
+</div>
+</div>
+<div id="screen5" class="screen flex-col items-center justify-center min-h-screen px-6 py-10 text-center relative z-10">
+<div class="fade-in-up max-w-md mx-auto">
+<div class="text-6xl mb-4 float-anim">💝</div>
+<h2 class="text-3xl font-extrabold neon-text mb-4" style="color: #ff69b4;">
+Misión Completada
+</h2>
+<div class="w-24 h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mb-6 rounded-full"></div>
+<div class="vip-card mb-6">
+<div class="vip-card-inner">
+<p class="text-gray-300 leading-relaxed text-lg">
+Has completado todas las pruebas. Eres oficialmente la mejor
+<span class="text-neon-pink font-bold">compañera de aventuras</span>.
+<br><br>
+<span class="text-2xl">Te quiero, princesa. 💕</span>
+</p>
+</div>
+</div>
+<a href="https://wa.me/?text=%C2%A1He%20superado%20el%20Escape%20Room%20Rom%C3%A1ntico%21%20%F0%9F%94%93%E2%9C%A8%0AConfirmada%20mi%20asistencia%20a%20la%20cita%3A%0A%F0%9F%93%8D%20Restaurante%3A%20Restaurante%20La%20Bodega%20%28Sant%20Quirze%20del%20Vall%C3%A8s%29%0A%F0%9F%93%85%20Fecha%3A%207%20de%20Noviembre%20a%20las%2015%3A00h%20%F0%9F%92%95"
+target="_blank"
+class="btn-neon w-full block mb-3 text-center"
+style="background: linear-gradient(135deg, #25d366, #128c7e); border-color: #25d366; text-decoration: none;">
+<i class="fab fa-whatsapp mr-2"></i> Confirmar Asistencia por WhatsApp
+</a>
+<button class="btn-neon w-full" onclick="resetAndGoHome()" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); border-color: #8b5cf6;">
+<i class="fas fa-redo mr-2"></i> Volver al inicio
+</button>
+</div>
+</div>
+<script>
+const DEFAULT_STATE = {
+currentScreen: 1,
+currentPuzzle: 1,
+puzzleProgress: {
+puzzle1: { completed: false, hintsUsed: 0 },
+puzzle2: { completed: false, currentQuestion: 0, correctAnswers: 0 },
+puzzle3: { completed: false, currentQuestion: 0 },
+puzzle4: { completed: false, attemptsLeft: 5, history: [] },
+puzzle5: { completed: false, currentQuestion: 0 }
+},
+unlockTimes: {
+after1: null,
+after2: null,
+after3: null,
+after4: null
+},
+soundEnabled: true
+};
+const STORAGE_KEY = 'cenaMisteriosa_state_v2';
+const LOCK_DURATION_MS = 24 * 60 * 60 * 1000;
+let appState = loadState();
+let audioCtx = null;
+let lockTimerInterval = null;
+function loadState() {
+try {
+localStorage.removeItem('cenaMisteriosa_state');
+const saved = localStorage.getItem(STORAGE_KEY);
+if (saved) {
+const parsed = JSON.parse(saved);
+return {
+...DEFAULT_STATE,
+...parsed,
+puzzleProgress: { ...DEFAULT_STATE.puzzleProgress, ...(parsed.puzzleProgress || {}) },
+unlockTimes: { ...DEFAULT_STATE.unlockTimes, ...(parsed.unlockTimes || {}) }
+};
+}
+} catch(e) { console.warn('Error cargando estado:', e); }
+return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+function saveState() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+} catch(e) { console.warn('Error guardando estado:', e); }
+}
+function fullReset() {
+try {
+localStorage.removeItem('cenaMisteriosa_state');
+localStorage.removeItem(STORAGE_KEY);
+} catch(e) {}
+appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+saveState();
+}
+function goToScreen(num) {
+document.querySelectorAll('.screen').forEach(s => {
+s.classList.remove('active');
+});
+const target = document.getElementById('screen' + num);
+if (target) {
+setTimeout(() => {
+target.classList.add('active');
+target.scrollTo?.(0, 0);
+window.scrollTo(0, 0);
+}, 100);
+}
+appState.currentScreen = num;
+saveState();
+if (num === 2) renderCurrentPuzzle();
+if (num === 4) initTruthOrDare();
+if (num === 5) {
+setTimeout(() => launchConfetti(), 500);
+setTimeout(() => launchConfetti(), 2000);
+}
+}
+function startMission() {
+playSound('success');
+goToScreen(2);
+}
+function resetAndGoHome() {
+fullReset();
+goToScreen(1);
+}
+function getPigpenSVG(letter) {
+const l = letter.toLowerCase();
+const size = 24;
+const p = 3;
+const s = size - p * 2;
+const mid = size / 2;
+const stroke = '#ff69b4';
+const dotFill = '#a855f7';
+const gridLines = {
+'a': { walls: 'rb', dot: false },
+'b': { walls: 'lrb', dot: false },
+'c': { walls: 'lb', dot: false },
+'d': { walls: 'rtb', dot: false },
+'e': { walls: 'lrtb', dot: false },
+'f': { walls: 'ltb', dot: false },
+'g': { walls: 'rt', dot: false },
+'h': { walls: 'lrt', dot: false },
+'i': { walls: 'lt', dot: false },
+'j': { walls: 'rb', dot: true },
+'k': { walls: 'lrb', dot: true },
+'l': { walls: 'lb', dot: true },
+'m': { walls: 'rtb', dot: true },
+'n': { walls: 'lrtb', dot: true },
+'o': { walls: 'ltb', dot: true },
+'p': { walls: 'rt', dot: true },
+'q': { walls: 'lrt', dot: true },
+'r': { walls: 'lt', dot: true },
+};
+const xShapes = {
+'s': { shape: 'tr', dot: false },
+'t': { shape: 'tl', dot: false },
+'u': { shape: 'br', dot: false },
+'v': { shape: 'bl', dot: false },
+'w': { shape: 'tr', dot: true },
+'x': { shape: 'tl', dot: true },
+'y': { shape: 'br', dot: true },
+'z': { shape: 'bl', dot: true },
+};
+let paths = '';
+let dotMark = '';
+if (gridLines[l]) {
+const { walls, dot } = gridLines[l];
+const x1 = p, y1 = p, x2 = size - p, y2 = size - p;
+if (walls.includes('t')) paths += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y1}"/>`;
+if (walls.includes('b')) paths += `<line x1="${x1}" y1="${y2}" x2="${x2}" y2="${y2}"/>`;
+if (walls.includes('l')) paths += `<line x1="${x1}" y1="${y1}" x2="${x1}" y2="${y2}"/>`;
+if (walls.includes('r')) paths += `<line x1="${x2}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+if (dot) dotMark = `<circle cx="${mid}" cy="${mid}" r="2.5" fill="${dotFill}"/>`;
+} else if (xShapes[l]) {
+const { shape, dot } = xShapes[l];
+const x1 = p, y1 = p, x2 = size - p, y2 = size - p;
+if (shape === 'tr') {
+paths += `<line x1="${mid}" y1="${mid}" x2="${x2}" y2="${y1}"/>`;
+paths += `<line x1="${mid}" y1="${mid}" x2="${x2}" y2="${y2}"/>`;
+} else if (shape === 'tl') {
+paths += `<line x1="${mid}" y1="${mid}" x2="${x1}" y2="${y1}"/>`;
+paths += `<line x1="${mid}" y1="${mid}" x2="${x1}" y2="${y2}"/>`;
+} else if (shape === 'br') {
+paths += `<line x1="${mid}" y1="${mid}" x2="${x2}" y2="${y1}"/>`;
+paths += `<line x1="${mid}" y1="${mid}" x2="${x1}" y2="${y1}"/>`;
+} else if (shape === 'bl') {
+paths += `<line x1="${mid}" y1="${mid}" x2="${x1}" y2="${y2}"/>`;
+paths += `<line x1="${mid}" y1="${mid}" x2="${x2}" y2="${y2}"/>`;
+}
+if (dot) {
+let dotX = mid, dotY = mid;
+if (shape === 'tr') dotX = mid + 4.5;
+else if (shape === 'tl') dotX = mid - 4.5;
+else if (shape === 'br') dotY = mid - 4.5;
+else if (shape === 'bl') dotY = mid + 4.5;
+dotMark = `<circle cx="${dotX}" cy="${dotY}" r="2.2" fill="${dotFill}"/>`;
+}
+}
+return `<svg class="pigpen-grid" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+<g stroke="${stroke}" stroke-width="2" stroke-linecap="round">${paths}</g>
+${dotMark}
+</svg>`;
+}
+function encodePigpenMessage(message) {
+const words = message.split(' ');
+let html = '<div class="pigpen-container">';
+words.forEach((word, wi) => {
+html += '<div class="pigpen-word">';
+for (const char of word) {
+const lower = char.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+if (/[a-z]/.test(lower)) {
+html += getPigpenSVG(lower);
+}
+}
+html += '</div>';
+if (wi < words.length - 1) {
+html += '<span style="width:8px;display:inline-block;"></span>';
+}
+});
+html += '</div>';
+return html;
+}
+// 🔒 MODIFICADO: Tabla de referencia SIN letras (solo símbolos)
+function getPigpenReferenceTable() {
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let html = '<div class="grid grid-cols-9 gap-1 mb-2">';
+for (let i = 0; i < 9; i++) {
+html += `<div class="cipher-ref-cell">${getPigpenSVG(letters[i])}</div>`;
+}
+html += '</div>';
+html += '<div class="grid grid-cols-9 gap-1 mb-2">';
+for (let i = 9; i < 18; i++) {
+html += `<div class="cipher-ref-cell">${getPigpenSVG(letters[i])}</div>`;
+}
+html += '</div>';
+html += '<div class="grid grid-cols-8 gap-1">';
+for (let i = 18; i < 26; i++) {
+html += `<div class="cipher-ref-cell">${getPigpenSVG(letters[i])}</div>`;
+}
+html += '</div>';
+return html;
+}
+function normalizeText(text) {
+return text
+.toLowerCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g, "")
+.replace(/[^a-z0-9\s]/g, "")
+.replace(/\s+/g, " ")
+.trim();
+}
+function compareAlphanumeric(a, b) {
+const cleanA = a.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+const cleanB = b.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+return cleanA === cleanB;
+}
+function getUnlockKeyAfter(puzzleNum) {
+return 'after' + puzzleNum;
+}
+function getActiveLock() {
+const currentPuzzle = appState.currentPuzzle;
+if (currentPuzzle <= 1 || currentPuzzle > 5) return null;
+const lockKey = getUnlockKeyAfter(currentPuzzle - 1);
+const unlockTimestamp = appState.unlockTimes[lockKey];
+if (!unlockTimestamp) return null;
+const now = Date.now();
+const remaining = unlockTimestamp - now;
+if (remaining <= 0) {
+appState.unlockTimes[lockKey] = null;
+saveState();
+return null;
+}
+return {
+key: lockKey,
+unlockTimestamp: unlockTimestamp,
+remainingMs: remaining,
+fromPuzzle: currentPuzzle - 1,
+toPuzzle: currentPuzzle
+};
+}
+function formatTimeRemaining(ms) {
+if (ms <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+const totalSeconds = Math.floor(ms / 1000);
+const days = Math.floor(totalSeconds / 86400);
+const hours = Math.floor((totalSeconds % 86400) / 3600);
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+const seconds = totalSeconds % 60;
+return { days, hours, minutes, seconds };
+}
+function renderLockScreen() {
+const lock = getActiveLock();
+if (!lock) return false;
+clearLockTimer();
+const container = document.getElementById('puzzleContainer');
+const time = formatTimeRemaining(lock.remainingMs);
+const pct = ((lock.toPuzzle - 1) / 5) * 100;
+document.getElementById('puzzleProgressLabel').textContent = `Prueba ${lock.toPuzzle} de 5 · Bloqueada`;
+document.getElementById('puzzleProgressPct').textContent = `${Math.round(pct)}%`;
+document.getElementById('puzzleProgressBar').style.width = `${pct}%`;
+const motivationalMessages = [
+"La paciencia es la clave del amor verdadero 💕",
+"Cada segundo de espera hace la cita más especial ✨",
+"Los mejores momentos merecen ser esperados ",
+"El deseo crece con la espera... 🔥",
+"Respira, la siguiente prueba te está esperando 🗝️"
+];
+const randomMsg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+container.innerHTML = `
+<div class="fade-in-up">
+<div class="text-center mb-4">
+<div class="text-5xl mb-3 lock-pulse">🔐</div>
+<h2 class="text-xl font-extrabold text-neon-pink mb-1">Prueba ${lock.toPuzzle} Bloqueada</h2>
+<p class="text-xs text-gray-400">Has completado la Prueba ${lock.fromPuzzle}. La siguiente se desbloqueará en...</p>
+</div>
+<div class="lock-timer-box mb-4">
+<div class="flex items-center justify-center gap-1 mb-4" id="lockTimerDisplay">
+<div class="timer-digit-group">
+<div class="timer-digit" id="timerDays">${String(time.days).padStart(2, '0')}</div>
+<div class="timer-label">Días</div>
+</div>
+<div class="timer-separator">:</div>
+<div class="timer-digit-group">
+<div class="timer-digit" id="timerHours">${String(time.hours).padStart(2, '0')}</div>
+<div class="timer-label">Horas</div>
+</div>
+<div class="timer-separator">:</div>
+<div class="timer-digit-group">
+<div class="timer-digit" id="timerMinutes">${String(time.minutes).padStart(2, '0')}</div>
+<div class="timer-label">Min</div>
+</div>
+<div class="timer-separator">:</div>
+<div class="timer-digit-group">
+<div class="timer-digit tick-pulse" id="timerSeconds">${String(time.seconds).padStart(2, '0')}</div>
+<div class="timer-label">Seg</div>
+</div>
+</div>
+<div class="w-full h-px bg-gradient-to-r from-transparent via-neon-pink to-transparent mb-3"></div>
+<p class="text-xs text-gray-300 italic px-2">${randomMsg}</p>
+</div>
+<button class="btn-neon w-full" id="unlockBtn" disabled onclick="onUnlockComplete()">
+<i class="fas fa-lock mr-2"></i> <span id="unlockBtnText">Esperando desbloqueo...</span>
+</button>
+<div class="mt-4 text-center">
+<p class="text-[10px] text-gray-500">
+<i class="fas fa-info-circle mr-1"></i>
+El temporizador sigue corriendo aunque cierres la app
+</p>
+</div>
+</div>
+`;
+lockTimerInterval = setInterval(() => updateLockTimer(lock), 1000);
+return true;
+}
+function updateLockTimer(lock) {
+const now = Date.now();
+const remaining = lock.unlockTimestamp - now;
+if (remaining <= 0) {
+clearLockTimer();
+onUnlockComplete();
+return;
+}
+const time = formatTimeRemaining(remaining);
+const dEl = document.getElementById('timerDays');
+const hEl = document.getElementById('timerHours');
+const mEl = document.getElementById('timerMinutes');
+const sEl = document.getElementById('timerSeconds');
+if (dEl) dEl.textContent = String(time.days).padStart(2, '0');
+if (hEl) hEl.textContent = String(time.hours).padStart(2, '0');
+if (mEl) mEl.textContent = String(time.minutes).padStart(2, '0');
+if (sEl) sEl.textContent = String(time.seconds).padStart(2, '0');
+}
+function onUnlockComplete() {
+clearLockTimer();
+const lock = getActiveLock();
+if (lock) {
+renderLockScreen();
+return;
+}
+const btn = document.getElementById('unlockBtn');
+const btnText = document.getElementById('unlockBtnText');
+if (btn && btnText) {
+btn.disabled = false;
+btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+btn.style.borderColor = '#10b981';
+btnText.innerHTML = '<i class="fas fa-lock-open mr-2"></i> ¡Desbloqueado! Entrando...';
+}
+playSound('success');
+launchConfetti();
+setTimeout(() => {
+renderCurrentPuzzle();
+}, 1500);
+}
+function clearLockTimer() {
+if (lockTimerInterval) {
+clearInterval(lockTimerInterval);
+lockTimerInterval = null;
+}
+}
+function setLockAfterPuzzle(puzzleNum) {
+if (puzzleNum >= 5) return;
+const key = getUnlockKeyAfter(puzzleNum);
+appState.unlockTimes[key] = Date.now() + LOCK_DURATION_MS;
+saveState();
+}
+function renderCurrentPuzzle() {
+const lock = getActiveLock();
+if (lock) {
+renderLockScreen();
+return;
+}
+const puzzle = appState.currentPuzzle;
+const pct = ((puzzle - 1) / 5) * 100;
+document.getElementById('puzzleProgressLabel').textContent = `Prueba ${puzzle} de 5`;
+document.getElementById('puzzleProgressPct').textContent = `${Math.round(pct)}%`;
+document.getElementById('puzzleProgressBar').style.width = `${pct}%`;
+switch(puzzle) {
+case 1: renderPuzzle1(); break;
+case 2: renderPuzzle2(); break;
+case 3: renderPuzzle3(); break;
+case 4: renderPuzzle4(); break;
+case 5: renderPuzzle5(); break;
+default: goToScreen(5); break;
+}
+}
+const PUZZLE1_SECRET = "En estos meses te has convertido en una persona especial para mi, la verdad es conocerte me ha alegrado mucho los dias y me encantas aunque a veces me muerdas, te quiero mi princesa";
+const PUZZLE1_HINTS = [
+"Fíjate en la cuadrícula de 3x3... cada celda tiene unas líneas únicas",
+"Las letras del final del abecedario usan formas en X",
+"La primera palabra es 'En'"
+];
+function renderPuzzle1() {
+const progress = appState.puzzleProgress.puzzle1;
+const container = document.getElementById('puzzleContainer');
+container.innerHTML = `
+<div class="fade-in-up">
+<div class="text-center mb-4">
+<div class="text-3xl mb-2">🔐</div>
+<h2 class="text-xl font-extrabold text-neon-pink">Prueba 1: El Mensaje Secreto</h2>
+<p class="text-sm text-gray-400 mt-1">Un mensaje ha sido cifrado con el antiguo Código Rosacruz. Descifra el mensaje completo para avanzar.</p>
+</div>
+<div class="bg-dark-card rounded-xl p-3 mb-4 border border-purple-900/50">
+<p class="text-xs text-neon-light font-bold mb-2 text-center"><i class="fas fa-key"></i> TABLA DE REFERENCIA</p>
+${getPigpenReferenceTable()}
+</div>
+<div class="bg-dark-card rounded-xl p-4 mb-4 border border-purple-900/50 max-h-60 overflow-y-auto">
+<p class="text-xs text-gray-500 mb-2 text-center">MENSAJE CIFRADO:</p>
+${encodePigpenMessage(PUZZLE1_SECRET)}
+</div>
+<textarea class="styled-textarea mb-3" id="puzzle1Input"
+placeholder="Escribe aquí el mensaje descifrado..." rows="4">${progress.savedInput || ''}</textarea>
+<div class="flex gap-2 mb-3">
+<button class="btn-neon flex-1" onclick="checkPuzzle1()">
+<i class="fas fa-check mr-1"></i> Comprobar
+</button>
+<button class="btn-neon px-4" onclick="showPuzzle1Hint()"
+style="background: linear-gradient(135deg, #6d28d9, #4c1d95); border-color: #8b5cf6;"
+id="hint1Btn">
+<i class="fas fa-lightbulb mr-1"></i> Pista <span class="text-xs">(${3 - progress.hintsUsed})</span>
+</button>
+</div>
+<div id="hintsContainer"></div>
+<div id="puzzle1Feedback"></div>
+</div>
+`;
+renderUsedHints(progress.hintsUsed);
+}
+function renderUsedHints(count) {
+const container = document.getElementById('hintsContainer');
+if (!container) return;
+let html = '';
+for (let i = 0; i < count; i++) {
+html += `<div class="hint-badge mb-2"><i class="fas fa-lightbulb mr-1"></i> ${PUZZLE1_HINTS[i]}</div>`;
+}
+container.innerHTML = html;
+}
+function showPuzzle1Hint() {
+const progress = appState.puzzleProgress.puzzle1;
+if (progress.hintsUsed >= 3) {
+showModal('😅 Sin pistas', 'Ya has usado todas las pistas disponibles.');
+return;
+}
+progress.hintsUsed++;
+const input = document.getElementById('puzzle1Input');
+if (input) progress.savedInput = input.value;
+saveState();
+renderUsedHints(progress.hintsUsed);
+const btn = document.getElementById('hint1Btn');
+if (btn) btn.innerHTML = `<i class="fas fa-lightbulb mr-1"></i> Pista <span class="text-xs">(${3 - progress.hintsUsed})</span>`;
+}
+function checkPuzzle1() {
+const input = document.getElementById('puzzle1Input');
+if (!input) return;
+const userAnswer = input.value.trim();
+if (!userAnswer) {
+shakeElement(input);
+playSound('error');
+return;
+}
+appState.puzzleProgress.puzzle1.savedInput = userAnswer;
+saveState();
+if (compareAlphanumeric(userAnswer, PUZZLE1_SECRET)) {
+playSound('success');
+launchConfetti();
+appState.puzzleProgress.puzzle1.completed = true;
+setLockAfterPuzzle(1);
+saveState();
+document.getElementById('puzzle1Feedback').innerHTML = `
+<div class="bg-green-900/30 border border-green-500 rounded-xl p-4 text-center fade-in-up mt-3">
+<div class="text-3xl mb-2">💕</div>
+<p class="text-green-300 font-bold">¡Descifrado! El mensaje oculto ha sido revelado 💕</p>
+<button class="btn-neon mt-3" onclick="advancePuzzle()">
+Siguiente prueba <i class="fas fa-arrow-right ml-1"></i>
+</button>
+</div>
+`;
+} else {
+playSound('error');
+shakeElement(input);
+document.getElementById('puzzle1Feedback').innerHTML = `
+<div class="bg-red-900/30 border border-red-500 rounded-xl p-3 text-center mt-3">
+<p class="text-red-300"><i class="fas fa-times-circle mr-1"></i> No es correcto, ¡sigue intentando!</p>
+</div>
+`;
+setTimeout(() => {
+const fb = document.getElementById('puzzle1Feedback');
+if (fb) fb.innerHTML = '';
+}, 3000);
+}
+}
+const QUIZ_QUESTIONS = [
+{
+question: "¿Qué comida inventaría Carlos si no existiera?",
+correct: "Pizza de Pepperoni",
+options: [
+"Pizza de Pepperoni",
+"Lasaña de cuatro quesos",
+"Hamburguesa doble de pollo crujiente",
+"Una ensalada vegana de tofu y brócoli hervido 🥦"
+],
+funnyWrong: "¡Ni de broma! Carlos sin pizza no es Carlos 🍕"
+},
+{
+question: "¿Qué película vimos en nuestra primera cita?",
+correct: "SpiderMan Brand New Day",
+options: [
+"SpiderMan Brand New Day",
+"The Amazing Spider-Man",
+"Vengadores: Endgame",
+"Un documental de tres horas sobre mecánica cuántica 🤓"
+],
+funnyWrong: "¡Esa no fue! Recuerda bien, fue épica 🕷️"
+},
+{
+question: "¿Cuál es mi punto débil?",
+correct: "Las cosquillas en el pie",
+options: [
+"Las cosquillas en el pie",
+"Los pikis en las costillas",
+"El frío en las manos",
+"Que me hagan un masaje relajante en la espalda con piedras calientes 💆"
+],
+funnyWrong: "Jajaja no es eso, ¡pero buen intento! 😂"
+},
+{
+question: "¿Cuál es mi saga de pelis favorita?",
+correct: "Harry Potter",
+options: [
+"Harry Potter",
+"El Señor de los Anillos",
+"Star Wars",
+"Las entregas de Teletubbies en versión original 📺"
+],
+funnyWrong: "¡Nope! Piensa en magia y Hogwarts 🧙‍♂️"
+}
+];
+function renderPuzzle2() {
+const progress = appState.puzzleProgress.puzzle2;
+const container = document.getElementById('puzzleContainer');
+const qIdx = progress.currentQuestion;
+if (qIdx >= QUIZ_QUESTIONS.length) {
+puzzle2Complete();
+return;
+}
+const q = QUIZ_QUESTIONS[qIdx];
+const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+container.innerHTML = `
+<div class="fade-in-up">
+<div class="text-center mb-4">
+<div class="text-3xl mb-2">💕</div>
+<h2 class="text-xl font-extrabold text-neon-pink">Prueba 2: ¿Cuánto Me Conoces?</h2>
+<p class="text-sm text-gray-400 mt-1">Demuestra que me conoces respondiendo correctamente.</p>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<div class="progress-bar-track flex-1">
+<div class="progress-bar-fill" style="width: ${(qIdx / QUIZ_QUESTIONS.length) * 100}%"></div>
+</div>
+<span class="text-xs text-neon-pink font-bold">${qIdx + 1}/${QUIZ_QUESTIONS.length}</span>
+</div>
+<div class="bg-dark-card rounded-xl p-4 border border-purple-900/50 mb-4">
+<p class="text-lg font-bold text-gray-200">${q.question}</p>
+</div>
+<div class="space-y-3" id="quizOptions">
+${shuffled.map((opt, i) => `
+<button class="quiz-option" onclick="checkQuizAnswer(this, '${opt.replace(/'/g, "\\'")}', '${q.correct.replace(/'/g, "\\'")}', '${q.funnyWrong.replace(/'/g, "\\'")}')">
+<span class="text-neon-light font-bold mr-2">${String.fromCharCode(65 + i)}.</span> ${opt}
+</button>
+`).join('')}
+</div>
+<div id="quiz2Feedback" class="mt-3"></div>
+</div>
+`;
+}
+function checkQuizAnswer(btn, selected, correct, funnyMsg) {
+const options = document.querySelectorAll('#quizOptions .quiz-option');
+if (selected === correct) {
+playSound('success');
+btn.classList.add('correct');
+btn.innerHTML = `<i class="fas fa-check-circle text-green-400 mr-2"></i> ${selected}`;
+options.forEach(o => o.disabled = true);
+appState.puzzleProgress.puzzle2.currentQuestion++;
+appState.puzzleProgress.puzzle2.correctAnswers++;
+saveState();
+setTimeout(() => renderPuzzle2(), 1200);
+} else {
+playSound('error');
+btn.classList.add('wrong', 'shake');
+btn.innerHTML = `<i class="fas fa-times-circle text-red-400 mr-2"></i> ${selected}`;
+document.getElementById('quiz2Feedback').innerHTML = `
+<div class="bg-red-900/30 border border-red-500 rounded-xl p-3 text-center fade-in">
+<p class="text-red-300 text-sm">${funnyMsg}</p>
+</div>
+`;
+btn.disabled = true;
+btn.style.opacity = '0.5';
+setTimeout(() => {
+const fb = document.getElementById('quiz2Feedback');
+if (fb) fb.innerHTML = '';
+}, 2000);
+}
+}
+function puzzle2Complete() {
+playSound('success');
+launchConfetti();
+appState.puzzleProgress.puzzle2.completed = true;
+setLockAfterPuzzle(2);
+saveState();
+const container = document.getElementById('puzzleContainer');
+container.innerHTML = `
+<div class="fade-in-up text-center">
+<div class="text-5xl mb-4">🎉</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-2">¡Increíble!</h2>
+<p class="text-gray-300 mb-4">Has demostrado que me conoces de verdad 💕</p>
+<button class="btn-neon" onclick="advancePuzzle()">
+Siguiente prueba <i class="fas fa-arrow-right ml-1"></i>
+</button>
+</div>
+`;
+}
+const DOOR_QUESTIONS = [
+{
+question: "¿Qué se pilla antes?",
+doors: [
+{ label: "Al cojo", msg: "Podría ser pero mi primo Eduardo no tiene piernas 😂", correct: false },
+{ label: "Al mentiroso", msg: "¿Cómo vas a pillar al mentiroso si corre mucho? ", correct: false },
+{ label: "A mi primo Eduardo que no tiene piernas", msg: "Exacto, mi primo Eduardo es más lento que mi tortuga... ¡no tengo un primo Eduardo jajajaja! 🐢", correct: true }
+]
+},
+{
+question: "Si tengo 5 manzanas y Juan me roba 3, ¿cuántas manzanas me quedan?",
+doors: [
+{ label: "2", msg: "Matemáticamente está bien, pero Juan no entiende de mates 🍎", correct: false },
+{ label: "5", msg: "No me dio tiempo a coger a Juan porque estaba mi primo Eduardo 😅", correct: false },
+{ label: "Juan era negro y se llevó las 5 y las de mi primo Eduardo", msg: "Por desgracia me quedé sin manzanas y me quedé sin cartera 💸", correct: true }
+]
+},
+{
+question: "Si una tortuga pierde su caparazón, ¿está desnuda o sin hogar?",
+doors: [
+{ label: "Desnuda", msg: "Podría ser pero no es esta 🤔", correct: false },
+{ label: "Sin hogar", msg: "Podría ser pero no es esta 🏠", correct: false },
+{ label: "Está estresada y buscando repuesto", msg: "La vida es muy dura y ha denunciado a Juan 🐢⚖️", correct: true }
+]
+},
+{
+question: "Si te pegan con un diccionario, ¿es una agresión verbal o física?",
+doors: [
+{ label: "Agresión verbal", msg: "Podría ser pero no es esta 📖", correct: false },
+{ label: "Agresión física", msg: "Podría ser pero no es esta 👊", correct: false },
+{ label: "Ambas, una vez me pegaron con uno", msg: "Nunca contradigas a una madre 👩‍👦", correct: true }
+]
+},
+{
+question: "¿Por qué la ropa de lana encoge cuando la lavas, pero las ovejas cuando llueve no?",
+doors: [
+{ label: "Porque la lana se pierde", msg: "No tengo ni idea de lana 🧶", correct: false },
+{ label: "Porque la oveja se esconde en el árbol", msg: "Las ovejas son listas 🐑🌳", correct: false },
+{ label: "No lo sé pero mi pijama de manga corta se encogió y no era de lana", msg: "Un día triste jajajaja 😢", correct: true }
+]
+}
+];
+function shuffleArray(arr) {
+const copy = [...arr];
+for (let i = copy.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[copy[i], copy[j]] = [copy[j], copy[i]];
+}
+return copy;
+}
+function renderPuzzle3(isNextTransition = false) {
+const progress = appState.puzzleProgress.puzzle3;
+const qIdx = progress.currentQuestion;
+const container = document.getElementById('puzzleContainer');
+if (qIdx >= DOOR_QUESTIONS.length) {
+puzzle3Complete();
+return;
+}
+const q = DOOR_QUESTIONS[qIdx];
+const shuffledDoors = shuffleArray(q.doors);
+const doorEmojis = ['🚪', '🚪', '🚪'];
+const doorLabels = ['A', 'B', 'C'];
+const animClass = isNextTransition ? 'enter-room-anim' : 'fade-in-up';
+container.innerHTML = `
+<div class="${animClass}">
+<div class="text-center mb-4">
+<div class="text-3xl mb-2">🚪</div>
+<h2 class="text-xl font-extrabold text-neon-pink">Prueba 3: Puertas Trampa</h2>
+<p class="text-sm text-gray-400 mt-1">¡Cuidado! Si fallas, vuelves al principio 😈</p>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<div class="progress-bar-track flex-1">
+<div class="progress-bar-fill" style="width: ${(qIdx / DOOR_QUESTIONS.length) * 100}%"></div>
+</div>
+<span class="text-xs text-neon-pink font-bold">Pregunta ${qIdx + 1}/${DOOR_QUESTIONS.length}</span>
+</div>
+<div class="bg-dark-card rounded-xl p-4 border border-purple-900/50 mb-4">
+<p class="text-lg font-bold text-gray-200">${q.question}</p>
+</div>
+<div class="space-y-3" id="doorsContainer">
+${shuffledDoors.map((d, i) => `
+<div class="door-card" onclick="chooseDoor(${qIdx}, ${i})" id="door-${i}">
+<div class="flex items-center gap-3">
+<div class="text-3xl door-icon">${doorEmojis[i]}</div>
+<div>
+<div class="text-neon-light font-bold text-sm">Puerta ${doorLabels[i]}</div>
+<div class="text-gray-300 text-sm">${d.label}</div>
+</div>
+</div>
+</div>
+`).join('')}
+</div>
+<div id="doors3Feedback" class="mt-3"></div>
+</div>
+`;
+DOOR_QUESTIONS[qIdx]._shuffledDoors = shuffledDoors;
+}
+function chooseDoor(qIdx, doorIdx) {
+const q = DOOR_QUESTIONS[qIdx];
+const doors = q._shuffledDoors || q.doors;
+const door = doors[doorIdx];
+const doorEl = document.getElementById(`door-${doorIdx}`);
+const container = document.getElementById('puzzleContainer');
+document.querySelectorAll('.door-card').forEach(d => d.style.pointerEvents = 'none');
+if (door.correct) {
+playSound('success');
+doorEl.style.borderColor = '#10b981';
+doorEl.style.background = 'rgba(16,185,129,0.25)';
+doorEl.style.boxShadow = '0 0 25px rgba(16,185,129,0.6)';
+showModal('✅ ¡Correcto!', door.msg, () => {
+playSound('door_pass');
+const flash = document.createElement('div');
+flash.className = 'room-flash-overlay';
+document.body.appendChild(flash);
+setTimeout(() => flash.remove(), 700);
+container.classList.add('door-transition-out');
+setTimeout(() => {
+container.classList.remove('door-transition-out');
+appState.puzzleProgress.puzzle3.currentQuestion++;
+saveState();
+renderPuzzle3(true);
+}, 550);
+});
+} else {
+playSound('error');
+doorEl.classList.add('shake');
+doorEl.style.borderColor = '#ef4444';
+doorEl.style.background = 'rgba(239,68,68,0.25)';
+doorEl.style.boxShadow = '0 0 25px rgba(239,68,68,0.6)';
+showModal('❌ ¡Trampa!', door.msg + '<br><br><span class="text-red-400 font-bold">¡Vuelves al principio! 😈</span>', () => {
+playSound('trap_fall');
+const flash = document.createElement('div');
+flash.className = 'room-trap-overlay';
+document.body.appendChild(flash);
+setTimeout(() => flash.remove(), 700);
+container.classList.add('trapdoor-fall');
+setTimeout(() => {
+container.classList.remove('trapdoor-fall');
+appState.puzzleProgress.puzzle3.currentQuestion = 0;
+saveState();
+renderPuzzle3(true);
+}, 700);
+});
+}
+}
+function puzzle3Complete() {
+playSound('success');
+launchConfetti();
+appState.puzzleProgress.puzzle3.completed = true;
+setLockAfterPuzzle(3);
+saveState();
+const container = document.getElementById('puzzleContainer');
+container.innerHTML = `
+<div class="fade-in-up text-center">
+<div class="text-5xl mb-4">🎉</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-2">¡Menos mal que has pasado!</h2>
+<p class="text-gray-300 mb-4">Ahora te queda la siguiente... 😏</p>
+<button class="btn-neon" onclick="advancePuzzle()">
+Siguiente prueba <i class="fas fa-arrow-right ml-1"></i>
+</button>
+</div>
+`;
+}
+const TARGET_RESTAURANT = {
+name: "Restaurante La Bodega",
+address: "Carrer del Penedès, 18, Sant Quirze del Vallès",
+lat: 41.54024,
+lng: 2.07563,
+maxRadiusKm: 2.0
+};
+let geoMap = null;
+let guessCircle = null;
+let targetMarker = null;
+function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+const R = 6371;
+const dLat = (lat2 - lat1) * Math.PI / 180;
+const dLon = (lon2 - lon1) * Math.PI / 180;
+const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+Math.sin(dLon / 2) * Math.sin(dLon / 2);
+const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+return R * c;
+}
+function renderPuzzle4() {
+const container = document.getElementById('puzzleContainer');
+const progress = appState.puzzleProgress.puzzle4;
+if (!progress.attemptsLeft && progress.attemptsLeft !== 0) progress.attemptsLeft = 5;
+if (!progress.history) progress.history = [];
+if (progress.completed) {
+renderPuzzle4Success(container);
+return;
+}
+container.innerHTML = `
+<div class="fade-in-up">
+<div class="text-center mb-3">
+<div class="text-3xl mb-1">📍</div>
+<h2 class="text-xl font-extrabold text-neon-pink">Prueba 4: GeoGuessr Romántico</h2>
+<p class="text-xs text-gray-400 mt-1">
+¿Dónde nos iremos de cena? Mueve el mapa y ajusta el círculo para encerrar el restaurante secreto.
+</p>
+</div>
+<div class="flex justify-between items-center mb-2 px-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-gray-400">Intentos:</span>
+<span class="text-neon-pink font-bold" id="geoAttempts">${'❤️'.repeat(progress.attemptsLeft)}${''.repeat(5 - progress.attemptsLeft)}</span>
+</div>
+<div class="text-xs text-neon-light font-bold">
+<i class="fas fa-bullseye mr-1"></i> Radio máx: 2.0 km
+</div>
+</div>
+<div class="relative mb-3">
+<div id="geoMapContainer"></div>
+<svg id="radarSvgOverlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+<circle id="radarCircleSvg" cx="50%" cy="50%" r="20%" fill="rgba(168, 85, 247, 0.22)" stroke="#ff69b4" stroke-width="2.5" stroke-dasharray="5 5"></circle>
+</svg>
+<div class="map-crosshair"></div>
+<div class="absolute bottom-2 left-2 z-[1000] bg-dark-bg/80 backdrop-blur-sm border border-purple-900/60 px-2 py-1 rounded text-[10px] text-gray-300">
+<i class="fas fa-hand-pointer text-neon-pink"></i> Arrastra el mapa
+</div>
+</div>
+<div class="bg-dark-card rounded-xl p-3 border border-purple-900/50 mb-3">
+<div class="flex justify-between items-center mb-1 text-xs">
+<span class="text-gray-300 font-semibold"><i class="fas fa-circle-notch text-neon-pink mr-1"></i> Radio del radar:</span>
+<span class="text-neon-pink font-bold" id="radiusLabel">1.5 km</span>
+</div>
+<input type="range" min="0.5" max="6.0" step="0.1" value="1.5" class="radius-slider" id="geoRadiusSlider" oninput="updateRadarCircle(this.value)">
+<div class="flex justify-between text-[10px] text-gray-400 mt-1">
+<span>0.5 km</span>
+<span class="text-neon-light">Objetivo final: &le; 2.0 km</span>
+<span>6.0 km</span>
+</div>
+</div>
+<button class="btn-neon w-full mb-3" id="geoCheckBtn" onclick="checkGeoGuess()">
+<i class="fas fa-radar mr-2"></i> Rastrear Ubicación
+</button>
+<div id="geoFeedback"></div>
+</div>
+`;
+setTimeout(() => initGeoMap(), 50);
+}
+function initGeoMap() {
+const mapEl = document.getElementById('geoMapContainer');
+if (!mapEl) return;
+const initialCenter = [41.542, 2.065];
+try {
+if (geoMap) {
+geoMap.remove();
+geoMap = null;
+}
+geoMap = L.map('geoMapContainer', {
+center: initialCenter,
+zoom: 13,
+zoomControl: false,
+attributionControl: false
+});
+L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+className: 'carto-dark-layer',
+subdomains: ['a', 'b', 'c'],
+maxZoom: 19
+}).addTo(geoMap);
+setTimeout(() => { if (geoMap) geoMap.invalidateSize(); }, 100);
+setTimeout(() => { if (geoMap) geoMap.invalidateSize(); }, 400);
+const initialRadiusKm = parseFloat(document.getElementById('geoRadiusSlider')?.value || 1.5);
+guessCircle = L.circle(initialCenter, {
+radius: initialRadiusKm * 1000,
+color: '#ff69b4',
+fillColor: '#a855f7',
+fillOpacity: 0.22,
+weight: 2.5,
+dashArray: '5, 5'
+}).addTo(geoMap);
+const syncCircles = () => {
+if (geoMap && guessCircle) {
+const center = geoMap.getCenter();
+guessCircle.setLatLng(center);
+updateRadarSvgVisual(parseFloat(document.getElementById('geoRadiusSlider')?.value || 1.5));
+}
+};
+geoMap.on('move', syncCircles);
+geoMap.on('zoomend', syncCircles);
+geoMap.on('resize', syncCircles);
+setTimeout(syncCircles, 150);
+} catch (e) {
+console.error('Error inicializando mapa Leaflet:', e);
+mapEl.innerHTML = `
+<div class="flex flex-col items-center justify-center h-full p-4 text-center">
+<p class="text-neon-pink font-bold mb-2">Modo Radar Offline</p>
+<p class="text-xs text-gray-300 mb-3">Toca para enviar coordenadas estimadas en el Vallès</p>
+<button class="btn-neon text-xs px-3 py-2" onclick="simulateGeoGuess()">Usar radar automático</button>
+</div>
+`;
+}
+}
+function updateRadarSvgVisual(radiusKm) {
+if (!geoMap) return;
+const center = geoMap.getCenter();
+const centerPoint = geoMap.latLngToContainerPoint(center);
+const edgeLatLng = L.latLng(center.lat + (radiusKm / 111.32), center.lng);
+const edgePoint = geoMap.latLngToContainerPoint(edgeLatLng);
+const radiusPx = Math.abs(centerPoint.y - edgePoint.y);
+const circleSvg = document.getElementById('radarCircleSvg');
+if (circleSvg) {
+circleSvg.setAttribute('cx', `${centerPoint.x}`);
+circleSvg.setAttribute('cy', `${centerPoint.y}`);
+circleSvg.setAttribute('r', `${Math.max(15, radiusPx)}`);
+if (radiusKm > 2.0) {
+circleSvg.setAttribute('stroke', '#f59e0b');
+circleSvg.setAttribute('fill', 'rgba(245, 158, 11, 0.18)');
+} else {
+circleSvg.setAttribute('stroke', '#ff69b4');
+circleSvg.setAttribute('fill', 'rgba(168, 85, 247, 0.22)');
+}
+}
+}
+function updateRadarCircle(val) {
+const radiusKm = parseFloat(val);
+const label = document.getElementById('radiusLabel');
+if (label) {
+if (radiusKm > 2.0) {
+label.innerHTML = `${radiusKm.toFixed(1)} km <span class="text-yellow-400 font-bold text-[10px]">(⚠️ >2km: deberás acercarte)</span>`;
+} else {
+label.innerHTML = `${radiusKm.toFixed(1)} km <span class="text-green-400 font-bold text-[10px]">(✓ Válido para ganar)</span>`;
+}
+}
+if (guessCircle && geoMap) {
+guessCircle.setRadius(radiusKm * 1000);
+if (radiusKm > 2.0) {
+guessCircle.setStyle({ color: '#f59e0b', fillColor: '#f59e0b' });
+} else {
+guessCircle.setStyle({ color: '#ff69b4', fillColor: '#a855f7' });
+}
+}
+updateRadarSvgVisual(radiusKm);
+}
+function checkGeoGuess() {
+if (!geoMap || !guessCircle) {
+simulateGeoGuess();
+return;
+}
+const center = geoMap.getCenter();
+const radiusKm = parseFloat(document.getElementById('geoRadiusSlider').value);
+const distKm = calculateDistanceKm(center.lat, center.lng, TARGET_RESTAURANT.lat, TARGET_RESTAURANT.lng);
+const progress = appState.puzzleProgress.puzzle4;
+const isInside = distKm <= radiusKm;
+const isRadiusValid = radiusKm <= TARGET_RESTAURANT.maxRadiusKm;
+if (isInside && isRadiusValid) {
+playSound('success');
+launchConfetti();
+progress.completed = true;
+setLockAfterPuzzle(4);
+saveState();
+if (targetMarker) geoMap.removeLayer(targetMarker);
+targetMarker = L.circleMarker([TARGET_RESTAURANT.lat, TARGET_RESTAURANT.lng], {
+radius: 12,
+color: '#10b981',
+fillColor: '#34d399',
+fillOpacity: 0.95,
+weight: 3
+}).addTo(geoMap);
+guessCircle.setStyle({ color: '#10b981', fillColor: '#10b981', fillOpacity: 0.35 });
+const circleSvg = document.getElementById('radarCircleSvg');
+if (circleSvg) {
+circleSvg.setAttribute('stroke', '#10b981');
+circleSvg.setAttribute('fill', 'rgba(16, 185, 129, 0.35)');
+}
+geoMap.flyTo([TARGET_RESTAURANT.lat, TARGET_RESTAURANT.lng], 16, { duration: 1.5 });
+setTimeout(() => {
+renderPuzzle4Success(document.getElementById('puzzleContainer'));
+}, 1800);
+} else if (isInside && !isRadiusValid) {
+playSound('error');
+progress.attemptsLeft--;
+saveState();
+const heartsEl = document.getElementById('geoAttempts');
+if (heartsEl) {
+heartsEl.textContent = '❤️'.repeat(Math.max(0, progress.attemptsLeft)) + '🖤'.repeat(Math.max(0, 5 - progress.attemptsLeft));
+}
+const mapContainer = document.getElementById('geoMapContainer');
+if (mapContainer) shakeElement(mapContainer);
+const fb = document.getElementById('geoFeedback');
+if (fb) {
+fb.innerHTML = `
+<div class="bg-dark-card border border-yellow-500/70 rounded-xl p-3 text-xs text-gray-200 mt-2 fade-in">
+<div class="flex items-start gap-2">
+<span class="text-lg"></span>
+<div>
+<p class="text-yellow-300 font-bold leading-snug">¡Está dentro del círculo!</p>
+<p class="text-gray-300 mt-1 leading-relaxed">
+Has localizado la zona correcta, <b>pero tu radar es de ${radiusKm.toFixed(1)} km</b>.<br>
+Para fijar las coordenadas exactas de la cita, <b>debes acercarte más y reducir el radio a menos de 2.0 km</b>.
+</p>
+<p class="text-[10px] text-gray-400 mt-1">Te quedan <b>${progress.attemptsLeft}</b> intentos.</p>
+</div>
+</div>
+</div>
+`;
+}
+checkAttemptsDepleted(progress);
+} else {
+playSound('error');
+progress.attemptsLeft--;
+saveState();
+const heartsEl = document.getElementById('geoAttempts');
+if (heartsEl) {
+heartsEl.textContent = '❤️'.repeat(Math.max(0, progress.attemptsLeft)) + '🖤'.repeat(Math.max(0, 5 - progress.attemptsLeft));
+}
+const mapContainer = document.getElementById('geoMapContainer');
+if (mapContainer) shakeElement(mapContainer);
+let hintMsg = '';
+const distanceInt = distKm < 1 ? `${Math.round(distKm * 1000)} metros` : `${distKm.toFixed(1)} km`;
+const dLat = TARGET_RESTAURANT.lat - center.lat;
+const dLng = TARGET_RESTAURANT.lng - center.lng;
+let direction = '';
+if (dLat > 0.005) direction += 'al Norte ';
+else if (dLat < -0.005) direction += 'al Sur ';
+if (dLng > 0.005) direction += 'al Este';
+else if (dLng < -0.005) direction += 'al Oeste';
+if (!direction) direction = 'muy cerca de tu posición';
+if (distKm > 6.0) {
+hintMsg = `❄️ <b>Muy frío...</b> El radar está a unos <b>${distanceInt}</b>. Muévete hacia la zona de Sant Quirze del Vallès / Sabadell (${direction.trim()}).`;
+} else if (distKm > 3.0) {
+hintMsg = `️ <b>Tibio, vas bien:</b> El restaurante está a unos <b>${distanceInt}</b> de tu mira central (${direction.trim()}). ¡Explora por Sant Quirze!`;
+} else {
+hintMsg = `🔥 <b>¡Muy caliente!</b> Estás a tan solo <b>${distanceInt}</b> (${direction.trim()}). ¡Ajusta el centro hacia allí!`;
+}
+const fb = document.getElementById('geoFeedback');
+if (fb) {
+fb.innerHTML = `
+<div class="bg-dark-card border border-neon-pink/40 rounded-xl p-3 text-xs text-gray-200 mt-2 fade-in">
+<div class="flex items-start gap-2">
+<span class="text-base">📡</span>
+<div>
+<p class="leading-relaxed">${hintMsg}</p>
+<p class="text-[10px] text-gray-400 mt-1">Te quedan <b>${progress.attemptsLeft}</b> intentos.</p>
+</div>
+</div>
+</div>
+`;
+}
+checkAttemptsDepleted(progress);
+}
+}
+function checkAttemptsDepleted(progress) {
+if (progress.attemptsLeft <= 0) {
+setTimeout(() => {
+showModal('⚠️ Radar sobrecalentado', 'Has agotado los 5 intentos, pero el servicio secreto te otorga 3 intentos extra y una pista clave: <i>El restaurante está en el polígono Can Casablanques de Sant Quirze del Vallès</i>.', () => {
+progress.attemptsLeft = 3;
+saveState();
+renderPuzzle4();
+});
+}, 1000);
+}
+}
+function simulateGeoGuess() {
+const progress = appState.puzzleProgress.puzzle4;
+progress.completed = true;
+setLockAfterPuzzle(4);
+saveState();
+playSound('success');
+launchConfetti();
+renderPuzzle4Success(document.getElementById('puzzleContainer'));
+}
+function renderPuzzle4Success(container) {
+container.innerHTML = `
+<div class="fade-in-up text-center">
+<div class="text-5xl mb-2 float-anim">🎉</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-1">¡Coordenadas Bloqueadas!</h2>
+<p class="text-xs text-neon-light uppercase tracking-widest mb-4">Destino Descifrado con Éxito</p>
+<div class="vip-card mb-4 text-left">
+<div class="vip-card-inner">
+<div class="flex items-center gap-3 mb-3">
+<div class="text-3xl text-neon-pink">🍽️</div>
+<div>
+<h3 class="text-lg font-bold text-gray-100">${TARGET_RESTAURANT.name}</h3>
+<p class="text-xs text-neon-light">Sant Quirze del Vallès</p>
+</div>
+</div>
+<div class="w-full h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mb-3 rounded-full"></div>
+<div class="space-y-2 text-xs text-gray-300">
+<div class="flex items-start gap-2">
+<i class="fas fa-location-dot text-neon-pink mt-0.5"></i>
+<span><b>Dirección:</b> ${TARGET_RESTAURANT.address}</span>
+</div>
+<div class="flex items-center gap-2">
+<i class="fas fa-bullseye text-green-400"></i>
+<span><b>Alcance:</b> Objetivo capturado dentro del radio</span>
+</div>
+<div class="flex items-center gap-2">
+<i class="fas fa-clock text-neon-light"></i>
+<span><b>Cita:</b> Mesa reservada para los dos</span>
+</div>
+</div>
+</div>
+</div>
+<button class="btn-neon w-full" onclick="advancePuzzle()">
+Siguiente prueba: El Revelador del Tiempo <i class="fas fa-arrow-right ml-2"></i>
+</button>
+</div>
+`;
+}
+function advancePuzzle() {
+appState.currentPuzzle++;
+saveState();
+if (appState.currentPuzzle > 5) {
+goToScreen(5);
+} else {
+renderCurrentPuzzle();
+}
+}
+const TIME_RIDDLES = [
+{
+id: 1,
+title: "Acertijo 1 de 2: La Esencia",
+icon: "🍣",
+question: "Si fuera una comida sería...",
+placeholder: "Escribe la comida aquí...",
+answer: "Nigiri",
+hint: "Piensa en gastronomía japonesa, arroz con una pieza de pescado encima..."
+},
+{
+id: 2,
+title: "Acertijo 2 de 2: El Deseo",
+icon: "🏔️",
+question: "¿Dónde me gustaría ir en mi cumple?",
+placeholder: "Escribe el destino aquí...",
+answer: "Andorra",
+hint: "Un país vecino entre montañas, nieve y compras..."
+}
+];
+function renderPuzzle5() {
+const progress = appState.puzzleProgress.puzzle5;
+const qIdx = progress.currentQuestion || 0;
+const container = document.getElementById('puzzleContainer');
+if (qIdx >= TIME_RIDDLES.length || progress.completed) {
+renderPuzzle5Victory(container);
+return;
+}
+const riddle = TIME_RIDDLES[qIdx];
+container.innerHTML = `
+<div class="fade-in-up">
+<div class="text-center mb-4">
+<div class="text-4xl mb-2 float-anim">${riddle.icon}</div>
+<h2 class="text-xl font-extrabold text-neon-pink">Prueba 5: El Revelador del Tiempo</h2>
+<p class="text-xs text-gray-400 mt-1">
+Has descubierto el lugar... ahora resuelve los dos últimos enigmas para desbloquear el día y la hora de la cita.
+</p>
+</div>
+<div class="flex items-center gap-2 mb-4">
+<div class="progress-bar-track flex-1">
+<div class="progress-bar-fill" style="width: ${(qIdx / TIME_RIDDLES.length) * 100}%"></div>
+</div>
+<span class="text-xs text-neon-pink font-bold">${riddle.title}</span>
+</div>
+<div class="bg-dark-card rounded-xl p-5 border border-purple-900/60 mb-4 shadow-lg shadow-purple-950/40">
+<p class="text-xs text-neon-light font-bold uppercase tracking-wider mb-2">Pregunta:</p>
+<p class="text-lg font-bold text-gray-100 leading-snug mb-4">${riddle.question}</p>
+<input type="text" class="styled-input mb-3" id="puzzle5Input"
+placeholder="${riddle.placeholder}"
+autocomplete="off"
+autofocus>
+<div class="flex gap-2">
+<button class="btn-neon flex-1" onclick="checkPuzzle5Answer()">
+<i class="fas fa-key mr-2"></i> Confirmar Respuesta
+</button>
+<button class="btn-neon px-4" onclick="showPuzzle5Hint('${riddle.hint.replace(/'/g, "\\'")}')"
+style="background: linear-gradient(135deg, #6d28d9, #4c1d95); border-color: #8b5cf6;" title="Pista">
+<i class="fas fa-lightbulb"></i>
+</button>
+</div>
+</div>
+<div id="puzzle5Feedback"></div>
+</div>
+`;
+const inputEl = document.getElementById('puzzle5Input');
+if (inputEl) {
+inputEl.addEventListener('keydown', (e) => {
+if (e.key === 'Enter') checkPuzzle5Answer();
+});
+}
+}
+function showPuzzle5Hint(hint) {
+showModal('💡 Pista Secreta', hint);
+}
+function checkPuzzle5Answer() {
+const inputEl = document.getElementById('puzzle5Input');
+if (!inputEl) return;
+const userVal = inputEl.value.trim();
+if (!userVal) {
+shakeElement(inputEl);
+playSound('error');
+return;
+}
+const progress = appState.puzzleProgress.puzzle5;
+const qIdx = progress.currentQuestion || 0;
+const riddle = TIME_RIDDLES[qIdx];
+if (compareAlphanumeric(userVal, riddle.answer)) {
+playSound('success');
+progress.currentQuestion++;
+saveState();
+if (progress.currentQuestion >= TIME_RIDDLES.length) {
+progress.completed = true;
+saveState();
+launchConfetti();
+setTimeout(() => launchConfetti(), 1200);
+const container = document.getElementById('puzzleContainer');
+renderPuzzle5Victory(container);
+} else {
+showModal('✨ ¡Correcto!', '¡Has dado en el clavo! Te queda un último acertijo para la revelación final.', () => {
+renderPuzzle5();
+});
+}
+} else {
+playSound('error');
+shakeElement(inputEl);
+const fb = document.getElementById('puzzle5Feedback');
+if (fb) {
+fb.innerHTML = `
+<div class="bg-red-900/30 border border-red-500 rounded-xl p-3 text-center mt-2 fade-in">
+<p class="text-red-300 text-xs font-semibold">❌ Mmm... esa no es la respuesta correcta. ¡Piénsalo bien o pide una pista!</p>
+</div>
+`;
+setTimeout(() => { if (fb) fb.innerHTML = ''; }, 3000);
+}
+}
+}
+function renderPuzzle5Victory(container) {
+const waMsg = encodeURIComponent("¡He superado el Escape Room Romántico! 🔓✨\nConfirmada mi asistencia a la cita:\n📍 Restaurante: Restaurante La Bodega (Sant Quirze del Vallès)\n📅 Fecha: 7 de Noviembre a las 15:00h 💕");
+const waUrl = `https://wa.me/?text=${waMsg}`;
+container.innerHTML = `
+<div class="fade-in-up text-center">
+<div class="text-6xl mb-2 float-anim">💌</div>
+<h2 class="text-2xl font-extrabold text-neon-pink mb-1">¡Misión Cumplida!</h2>
+<p class="text-xs text-neon-light uppercase tracking-widest mb-4">La Cita Romántica ha sido Desbloqueada</p>
+<div class="vip-card mb-5 text-left">
+<div class="vip-card-inner">
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-bold text-neon-pink tracking-widest uppercase">INVITACIÓN EXCLUSIVA</span>
+<span class="text-xs bg-green-950 border border-green-500 text-green-300 px-2 py-0.5 rounded-full font-bold">100% COMPLETADO</span>
+</div>
+<div class="w-full h-0.5 bg-gradient-to-r from-neon-pink to-neon-purple mb-4 rounded-full"></div>
+<div class="space-y-3 text-sm">
+<div class="flex items-start gap-3">
+<div class="text-2xl text-neon-pink mt-0.5"><i class="fas fa-utensils"></i></div>
+<div>
+<p class="text-[10px] text-gray-400 uppercase font-semibold">Restaurante</p>
+<p class="text-base font-bold text-gray-100">Restaurante La Bodega</p>
+<p class="text-xs text-neon-light">Carrer del Penedès, 18, Sant Quirze del Vallès</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="text-2xl text-neon-pink mt-0.5"><i class="fas fa-calendar-star"></i></div>
+<div>
+<p class="text-[10px] text-gray-400 uppercase font-semibold">Fecha y Hora</p>
+<p class="text-base font-bold text-neon-pink">7 de Noviembre &bull; 15:00h</p>
+<p class="text-xs text-gray-400">Mesa reservada para los dos</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="text-2xl text-neon-pink mt-0.5"><i class="fas fa-heart"></i></div>
+<div>
+<p class="text-[10px] text-gray-400 uppercase font-semibold">Nota Secreta</p>
+<p class="text-xs text-gray-300 italic">"Te quiero mi princesa, gracias por jugar y compartir este momento conmigo."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<a href="${waUrl}" target="_blank" class="btn-neon w-full block mb-3 text-center text-base"
+style="background: linear-gradient(135deg, #25d366, #128c7e); border-color: #25d366; text-decoration: none;">
+<i class="fab fa-whatsapp mr-2 text-xl align-middle"></i> Confirmar Asistencia por WhatsApp
+</a>
+<button class="btn-neon w-full" onclick="goToScreen(5)" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); border-color: #8b5cf6;">
+Ver Mensaje Final <i class="fas fa-arrow-right ml-1"></i>
+</button>
+</div>
+`;
+}
+let modalCallback = null;
+function showModal(title, body, callback) {
+const overlay = document.getElementById('modalOverlay');
+const content = document.getElementById('modalBody');
+modalCallback = callback || null;
+content.innerHTML = `
+<div class="text-3xl mb-3">${title.includes('✅') || title.includes('❌') ? '' : ''}</div>
+<h3 class="text-xl font-bold text-neon-pink mb-3">${title}</h3>
+<p class="text-gray-300 text-sm leading-relaxed">${body}</p>
+`;
+overlay.style.display = 'flex';
+setTimeout(() => overlay.classList.add('visible'), 10);
+}
+function closeModal() {
+const overlay = document.getElementById('modalOverlay');
+overlay.classList.remove('visible');
+setTimeout(() => {
+overlay.style.display = 'none';
+if (modalCallback) {
+modalCallback();
+modalCallback = null;
+}
+}, 300);
+}
+document.getElementById('settingsGear').addEventListener('click', () => {
+const modal = document.getElementById('settingsModal');
+modal.style.display = 'flex';
+setTimeout(() => modal.classList.add('visible'), 10);
+updateSoundToggle();
+});
+function closeSettings() {
+const modal = document.getElementById('settingsModal');
+modal.classList.remove('visible');
+setTimeout(() => { modal.style.display = 'none'; }, 300);
+}
+function toggleSound() {
+appState.soundEnabled = !appState.soundEnabled;
+saveState();
+updateSoundToggle();
+}
+function updateSoundToggle() {
+const btn = document.getElementById('soundToggle');
+btn.textContent = appState.soundEnabled ? '' : '🔇';
+}
+function resetOnlyPuzzle4() {
+appState.puzzleProgress.puzzle4 = { completed: false, attemptsLeft: 5, history: [] };
+appState.currentScreen = 2;
+appState.currentPuzzle = 4;
+saveState();
+closeSettings();
+goToScreen(2);
+renderPuzzle4();
+}
+function resetOnlyPuzzle5() {
+appState.puzzleProgress.puzzle5 = { completed: false, currentQuestion: 0 };
+appState.currentScreen = 2;
+appState.currentPuzzle = 5;
+saveState();
+closeSettings();
+goToScreen(2);
+renderPuzzle5();
+}
+function confirmReset() {
+if (confirm('⚠️ ¿Seguro que quieres reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+fullReset();
+closeSettings();
+goToScreen(1);
+}
+}
+function initAudio() {
+if (!audioCtx) {
+try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+catch(e) { console.warn('Web Audio API no disponible'); }
+}
+if (audioCtx && audioCtx.state === 'suspended') {
+audioCtx.resume();
+}
+}
+function playSound(type) {
+if (!appState.soundEnabled) return;
+initAudio();
+if (!audioCtx) return;
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+const now = audioCtx.currentTime;
+switch(type) {
+case 'success':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(523, now);
+osc.frequency.setValueAtTime(659, now + 0.1);
+osc.frequency.setValueAtTime(784, now + 0.2);
+gain.gain.setValueAtTime(0.15, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+osc.start(now);
+osc.stop(now + 0.4);
+break;
+case 'error':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(200, now);
+osc.frequency.setValueAtTime(150, now + 0.15);
+gain.gain.setValueAtTime(0.1, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+osc.start(now);
+osc.stop(now + 0.3);
+break;
+case 'flip':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(800, now);
+osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+gain.gain.setValueAtTime(0.08, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+osc.start(now);
+osc.stop(now + 0.15);
+break;
+case 'door_pass':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(392, now);
+osc.frequency.exponentialRampToValueAtTime(784, now + 0.25);
+osc.frequency.exponentialRampToValueAtTime(1046, now + 0.45);
+gain.gain.setValueAtTime(0.2, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+osc.start(now);
+osc.stop(now + 0.55);
+break;
+case 'trap_fall':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(450, now);
+osc.frequency.exponentialRampToValueAtTime(80, now + 0.5);
+gain.gain.setValueAtTime(0.25, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+osc.start(now);
+osc.stop(now + 0.5);
+break;
+case 'unlock':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(440, now);
+osc.frequency.setValueAtTime(554, now + 0.12);
+osc.frequency.setValueAtTime(659, now + 0.24);
+osc.frequency.setValueAtTime(880, now + 0.36);
+gain.gain.setValueAtTime(0.2, now);
+gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+osc.start(now);
+osc.stop(now + 0.6);
+break;
+}
+}
+function shakeElement(el) {
+el.classList.add('shake');
+setTimeout(() => el.classList.remove('shake'), 600);
+}
+function launchConfetti() {
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const particles = [];
+const colors = ['#ff69b4', '#ff1493', '#8b5cf6', '#a855f7', '#f472b6', '#fbbf24', '#ec4899'];
+const hearts = ['💕', '💖', '✨', '💗', '🌟', '💝'];
+for (let i = 0; i < 80; i++) {
+particles.push({
+x: Math.random() * canvas.width,
+y: -20 - Math.random() * 200,
+vx: (Math.random() - 0.5) * 4,
+vy: Math.random() * 3 + 2,
+size: Math.random() * 8 + 4,
+color: colors[Math.floor(Math.random() * colors.length)],
+rotation: Math.random() * 360,
+rotSpeed: (Math.random() - 0.5) * 10,
+type: Math.random() > 0.3 ? 'rect' : 'heart',
+heart: hearts[Math.floor(Math.random() * hearts.length)],
+opacity: 1
+});
+}
+let animFrame;
+function animate() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+let alive = false;
+particles.forEach(p => {
+if (p.y > canvas.height + 50) return;
+alive = true;
+p.x += p.vx;
+p.y += p.vy;
+p.vy += 0.05;
+p.rotation += p.rotSpeed;
+p.opacity -= 0.003;
+ctx.save();
+ctx.translate(p.x, p.y);
+ctx.rotate((p.rotation * Math.PI) / 180);
+ctx.globalAlpha = Math.max(0, p.opacity);
+if (p.type === 'heart') {
+ctx.font = `${p.size * 2}px serif`;
+ctx.textAlign = 'center';
+ctx.fillText(p.heart, 0, 0);
+} else {
+ctx.fillStyle = p.color;
+ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+}
+ctx.restore();
+});
+if (alive) {
+animFrame = requestAnimationFrame(animate);
+} else {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+}
+animate();
+setTimeout(() => {
+cancelAnimationFrame(animFrame);
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+}, 5000);
+}
+function initParticles() {
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+function resize() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+const stars = [];
+for (let i = 0; i < 60; i++) {
+stars.push({
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+size: Math.random() * 2 + 0.5,
+speed: Math.random() * 0.3 + 0.1,
+opacity: Math.random(),
+twinkleSpeed: Math.random() * 0.02 + 0.005,
+color: Math.random() > 0.5 ? '#ff69b4' : '#8b5cf6'
+});
+}
+function animateStars() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+stars.forEach(s => {
+s.opacity += s.twinkleSpeed;
+if (s.opacity >= 1 || s.opacity <= 0.1) s.twinkleSpeed *= -1;
+s.y += s.speed;
+if (s.y > canvas.height) {
+s.y = -5;
+s.x = Math.random() * canvas.width;
+}
+ctx.beginPath();
+ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+ctx.fillStyle = s.color;
+ctx.globalAlpha = Math.max(0.05, Math.min(1, s.opacity));
+ctx.fill();
+});
+ctx.globalAlpha = 1;
+requestAnimationFrame(animateStars);
+}
+animateStars();
+}
+function initApp() {
+initParticles();
+const savedScreen = appState.currentScreen;
+if (savedScreen && savedScreen > 1) {
+goToScreen(savedScreen);
+} else {
+document.getElementById('screen1').classList.add('active');
+}
+document.addEventListener('click', () => initAudio(), { once: true });
+document.addEventListener('touchstart', () => initAudio(), { once: true });
+window.addEventListener('beforeunload', clearLockTimer);
+}
+document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('visibilitychange', () => {
+if (!document.hidden && appState.currentScreen === 2) {
+const lock = getActiveLock();
+if (lock) {
+renderLockScreen();
+}
+}
+});
+</script>
+</body>
+</html>
