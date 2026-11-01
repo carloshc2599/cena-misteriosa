@@ -315,6 +315,34 @@ background: rgba(26,10,46,0.5);
 flex-direction: column;
 position: relative;
 }
+.alpha-cell {
+width: 28px; height: 28px;
+display: flex; align-items: center; justify-content: center;
+border: 1px solid rgba(139,92,246,0.4);
+border-radius: 6px;
+background: rgba(26,10,46,0.7);
+font-size: 0.8rem;
+font-weight: 700;
+color: #e2e8f0;
+cursor: pointer;
+transition: all 0.2s ease;
+user-select: none;
+-webkit-user-select: none;
+}
+.alpha-cell:hover {
+border-color: #ff69b4;
+background: rgba(255,20,147,0.15);
+transform: scale(1.1);
+}
+.alpha-cell.marked {
+background: rgba(16,185,129,0.25);
+border-color: #10b981;
+color: #10b981;
+text-decoration: line-through;
+text-decoration-color: #10b981;
+text-decoration-thickness: 2px;
+opacity: 0.5;
+}
 .styled-textarea {
 background: rgba(26,10,46,0.8);
 border: 2px solid #8b5cf6;
@@ -669,7 +697,7 @@ Has desbloqueado todas las pruebas de la misión.<br>
 <div class="bg-dark-bg rounded-xl p-4 space-y-2 text-left">
 <div class="flex justify-between items-center text-sm">
 <span class="text-gray-400">¿Cuándo?</span>
-<span class="text-neon-pink font-bold"> 7 de Noviembre &bull; 15:00h</span>
+<span class="text-neon-pink font-bold">📅 7 de Noviembre &bull; 15:00h</span>
 </div>
 <div class="flex justify-between items-center text-sm">
 <span class="text-gray-400">¿Dónde?</span>
@@ -752,7 +780,7 @@ const DEFAULT_STATE = {
 currentScreen: 1,
 currentPuzzle: 1,
 puzzleProgress: {
-puzzle1: { completed: false, hintsUsed: 0 },
+puzzle1: { completed: false, hintsUsed: 0, markedLetters: [] },
 puzzle2: { completed: false, currentQuestion: 0, correctAnswers: 0 },
 puzzle3: { completed: false, currentQuestion: 0 },
 puzzle4: { completed: false, attemptsLeft: 5, history: [] },
@@ -926,7 +954,6 @@ html += '<span style="width:8px;display:inline-block;"></span>';
 html += '</div>';
 return html;
 }
-// 🔒 MODIFICADO: Tabla de referencia SIN letras (solo símbolos)
 function getPigpenReferenceTable() {
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 let html = '<div class="grid grid-cols-9 gap-1 mb-2">';
@@ -945,6 +972,45 @@ html += `<div class="cipher-ref-cell">${getPigpenSVG(letters[i])}</div>`;
 }
 html += '</div>';
 return html;
+}
+function getAlphabetHelper() {
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let html = `
+<div class="mt-3 pt-3 border-t border-purple-900/40">
+<p class="text-[10px] text-gray-400 mb-2 text-center">
+<i class="fas fa-hand-pointer text-neon-pink mr-1"></i>
+Toca cada letra para marcarla cuando la descifres
+</p>
+<div class="grid grid-cols-13 gap-1" id="alphabetGrid">
+`;
+const markedLetters = appState.puzzleProgress.puzzle1.markedLetters || [];
+for (let i = 0; i < letters.length; i++) {
+const letter = letters[i];
+const isMarked = markedLetters.includes(letter);
+html += `<div class="alpha-cell ${isMarked ? 'marked' : ''}" data-letter="${letter}" onclick="toggleLetterMark(this, '${letter}')">${letter}</div>`;
+}
+html += '</div>';
+html += '<p class="text-[10px] text-gray-500 mt-2 text-center" id="alphabetCounter">Descifradas: <span class="text-neon-pink font-bold">' + markedLetters.length + '/26</span></p>';
+html += '</div>';
+return html;
+}
+function toggleLetterMark(element, letter) {
+const progress = appState.puzzleProgress.puzzle1;
+if (!progress.markedLetters) progress.markedLetters = [];
+const idx = progress.markedLetters.indexOf(letter);
+if (idx > -1) {
+progress.markedLetters.splice(idx, 1);
+element.classList.remove('marked');
+} else {
+progress.markedLetters.push(letter);
+element.classList.add('marked');
+playSound('flip');
+}
+saveState();
+const counterEl = document.getElementById('alphabetCounter');
+if (counterEl) {
+counterEl.innerHTML = 'Descifradas: <span class="text-neon-pink font-bold">' + progress.markedLetters.length + '/26</span>';
+}
 }
 function normalizeText(text) {
 return text
@@ -1006,7 +1072,7 @@ document.getElementById('puzzleProgressBar').style.width = `${pct}%`;
 const motivationalMessages = [
 "La paciencia es la clave del amor verdadero 💕",
 "Cada segundo de espera hace la cita más especial ✨",
-"Los mejores momentos merecen ser esperados ",
+"Los mejores momentos merecen ser esperados 🌹",
 "El deseo crece con la espera... 🔥",
 "Respira, la siguiente prueba te está esperando 🗝️"
 ];
@@ -1147,6 +1213,7 @@ container.innerHTML = `
 <div class="bg-dark-card rounded-xl p-3 mb-4 border border-purple-900/50">
 <p class="text-xs text-neon-light font-bold mb-2 text-center"><i class="fas fa-key"></i> TABLA DE REFERENCIA</p>
 ${getPigpenReferenceTable()}
+${getAlphabetHelper()}
 </div>
 <div class="bg-dark-card rounded-xl p-4 mb-4 border border-purple-900/50 max-h-60 overflow-y-auto">
 <p class="text-xs text-gray-500 mb-2 text-center">MENSAJE CIFRADO:</p>
@@ -1367,7 +1434,7 @@ const DOOR_QUESTIONS = [
 question: "¿Qué se pilla antes?",
 doors: [
 { label: "Al cojo", msg: "Podría ser pero mi primo Eduardo no tiene piernas 😂", correct: false },
-{ label: "Al mentiroso", msg: "¿Cómo vas a pillar al mentiroso si corre mucho? ", correct: false },
+{ label: "Al mentiroso", msg: "¿Cómo vas a pillar al mentiroso si corre mucho? 🏃", correct: false },
 { label: "A mi primo Eduardo que no tiene piernas", msg: "Exacto, mi primo Eduardo es más lento que mi tortuga... ¡no tengo un primo Eduardo jajajaja! 🐢", correct: true }
 ]
 },
@@ -1400,7 +1467,7 @@ question: "¿Por qué la ropa de lana encoge cuando la lavas, pero las ovejas cu
 doors: [
 { label: "Porque la lana se pierde", msg: "No tengo ni idea de lana 🧶", correct: false },
 { label: "Porque la oveja se esconde en el árbol", msg: "Las ovejas son listas 🐑🌳", correct: false },
-{ label: "No lo sé pero mi pijama de manga corta se encogió y no era de lana", msg: "Un día triste jajajaja 😢", correct: true }
+{ label: "No lo sé pero mi pijama de manga corta se encogió y no era de lana", msg: "Un día triste jajajaja 😢👕", correct: true }
 ]
 }
 ];
@@ -1525,12 +1592,15 @@ Siguiente prueba <i class="fas fa-arrow-right ml-1"></i>
 </div>
 `;
 }
+// ============================================
+// PRUEBA 4: GeoGuessr - Radio máximo 500m
+// ============================================
 const TARGET_RESTAURANT = {
 name: "Restaurante La Bodega",
 address: "Carrer del Penedès, 18, Sant Quirze del Vallès",
 lat: 41.54024,
 lng: 2.07563,
-maxRadiusKm: 2.0
+maxRadiusKm: 0.5 // 500 metros = 0.5 km
 };
 let geoMap = null;
 let guessCircle = null;
@@ -1566,10 +1636,10 @@ container.innerHTML = `
 <div class="flex justify-between items-center mb-2 px-1">
 <div class="flex items-center gap-1 text-xs">
 <span class="text-gray-400">Intentos:</span>
-<span class="text-neon-pink font-bold" id="geoAttempts">${'❤️'.repeat(progress.attemptsLeft)}${''.repeat(5 - progress.attemptsLeft)}</span>
+<span class="text-neon-pink font-bold" id="geoAttempts">${'❤️'.repeat(progress.attemptsLeft)}${'🖤'.repeat(5 - progress.attemptsLeft)}</span>
 </div>
 <div class="text-xs text-neon-light font-bold">
-<i class="fas fa-bullseye mr-1"></i> Radio máx: 2.0 km
+<i class="fas fa-bullseye mr-1"></i> Radio máx: 500m
 </div>
 </div>
 <div class="relative mb-3">
@@ -1590,7 +1660,7 @@ container.innerHTML = `
 <input type="range" min="0.5" max="6.0" step="0.1" value="1.5" class="radius-slider" id="geoRadiusSlider" oninput="updateRadarCircle(this.value)">
 <div class="flex justify-between text-[10px] text-gray-400 mt-1">
 <span>0.5 km</span>
-<span class="text-neon-light">Objetivo final: &le; 2.0 km</span>
+<span class="text-neon-light">Objetivo final: ≤ 500m</span>
 <span>6.0 km</span>
 </div>
 </div>
@@ -1659,6 +1729,7 @@ function updateRadarSvgVisual(radiusKm) {
 if (!geoMap) return;
 const center = geoMap.getCenter();
 const centerPoint = geoMap.latLngToContainerPoint(center);
+const meters = radiusKm * 1000;
 const edgeLatLng = L.latLng(center.lat + (radiusKm / 111.32), center.lng);
 const edgePoint = geoMap.latLngToContainerPoint(edgeLatLng);
 const radiusPx = Math.abs(centerPoint.y - edgePoint.y);
@@ -1667,7 +1738,7 @@ if (circleSvg) {
 circleSvg.setAttribute('cx', `${centerPoint.x}`);
 circleSvg.setAttribute('cy', `${centerPoint.y}`);
 circleSvg.setAttribute('r', `${Math.max(15, radiusPx)}`);
-if (radiusKm > 2.0) {
+if (radiusKm > 0.5) {
 circleSvg.setAttribute('stroke', '#f59e0b');
 circleSvg.setAttribute('fill', 'rgba(245, 158, 11, 0.18)');
 } else {
@@ -1680,15 +1751,15 @@ function updateRadarCircle(val) {
 const radiusKm = parseFloat(val);
 const label = document.getElementById('radiusLabel');
 if (label) {
-if (radiusKm > 2.0) {
-label.innerHTML = `${radiusKm.toFixed(1)} km <span class="text-yellow-400 font-bold text-[10px]">(⚠️ >2km: deberás acercarte)</span>`;
+if (radiusKm > 0.5) {
+label.innerHTML = `${radiusKm.toFixed(1)} km <span class="text-yellow-400 font-bold text-[10px]">(⚠️ >500m: deberás acercarte)</span>`;
 } else {
 label.innerHTML = `${radiusKm.toFixed(1)} km <span class="text-green-400 font-bold text-[10px]">(✓ Válido para ganar)</span>`;
 }
 }
 if (guessCircle && geoMap) {
 guessCircle.setRadius(radiusKm * 1000);
-if (radiusKm > 2.0) {
+if (radiusKm > 0.5) {
 guessCircle.setStyle({ color: '#f59e0b', fillColor: '#f59e0b' });
 } else {
 guessCircle.setStyle({ color: '#ff69b4', fillColor: '#a855f7' });
@@ -1746,12 +1817,12 @@ if (fb) {
 fb.innerHTML = `
 <div class="bg-dark-card border border-yellow-500/70 rounded-xl p-3 text-xs text-gray-200 mt-2 fade-in">
 <div class="flex items-start gap-2">
-<span class="text-lg"></span>
+<span class="text-lg">🎯</span>
 <div>
 <p class="text-yellow-300 font-bold leading-snug">¡Está dentro del círculo!</p>
 <p class="text-gray-300 mt-1 leading-relaxed">
 Has localizado la zona correcta, <b>pero tu radar es de ${radiusKm.toFixed(1)} km</b>.<br>
-Para fijar las coordenadas exactas de la cita, <b>debes acercarte más y reducir el radio a menos de 2.0 km</b>.
+Para fijar las coordenadas exactas de la cita, <b>debes acercarte más y reducir el radio a 500 metros o menos</b>.
 </p>
 <p class="text-[10px] text-gray-400 mt-1">Te quedan <b>${progress.attemptsLeft}</b> intentos.</p>
 </div>
@@ -1783,7 +1854,7 @@ if (!direction) direction = 'muy cerca de tu posición';
 if (distKm > 6.0) {
 hintMsg = `❄️ <b>Muy frío...</b> El radar está a unos <b>${distanceInt}</b>. Muévete hacia la zona de Sant Quirze del Vallès / Sabadell (${direction.trim()}).`;
 } else if (distKm > 3.0) {
-hintMsg = `️ <b>Tibio, vas bien:</b> El restaurante está a unos <b>${distanceInt}</b> de tu mira central (${direction.trim()}). ¡Explora por Sant Quirze!`;
+hintMsg = `🌤️ <b>Tibio, vas bien:</b> El restaurante está a unos <b>${distanceInt}</b> de tu mira central (${direction.trim()}). ¡Explora por Sant Quirze!`;
 } else {
 hintMsg = `🔥 <b>¡Muy caliente!</b> Estás a tan solo <b>${distanceInt}</b> (${direction.trim()}). ¡Ajusta el centro hacia allí!`;
 }
@@ -1847,7 +1918,7 @@ container.innerHTML = `
 </div>
 <div class="flex items-center gap-2">
 <i class="fas fa-bullseye text-green-400"></i>
-<span><b>Alcance:</b> Objetivo capturado dentro del radio</span>
+<span><b>Alcance:</b> Objetivo capturado dentro del radio de 500m</span>
 </div>
 <div class="flex items-center gap-2">
 <i class="fas fa-clock text-neon-light"></i>
@@ -2081,7 +2152,7 @@ updateSoundToggle();
 }
 function updateSoundToggle() {
 const btn = document.getElementById('soundToggle');
-btn.textContent = appState.soundEnabled ? '' : '🔇';
+btn.textContent = appState.soundEnabled ? '🔊' : '🔇';
 }
 function resetOnlyPuzzle4() {
 appState.puzzleProgress.puzzle4 = { completed: false, attemptsLeft: 5, history: [] };
